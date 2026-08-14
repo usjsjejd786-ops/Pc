@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0a14">
+<meta name="theme-color" content="#245edb">
+<title>RaulXP</title>
+<style>
+:root{
+  --bg: #0a0a0a;
+  --accent1: #1c62e0;
+  --accent2: #0d3aa0;
+  --accent3: #2a6fdb;
+  --panel: #ffffff;
+  --panel-dark: #ece9d8;
+  --text: #101010;
+  --text-dim: #5a5a5a;
+  --border-light: rgba(255,255,255,.6);
+  --border-dark: rgba(0,0,0,.35);
+  --screen-radius: 20px;
+  /* TROQUE AQUI pra usar sua propria imagem de fundo - pode ser um arquivo
+     relativo ("wallpaper.jpg") ou uma URL completa de qualquer lugar que
+     voce hospede a imagem (seu site, imgur, GitHub, etc). Nao precisa estar
+     na mesma pasta do index.html se voce usar uma URL completa aqui. */
+  --wallpaper-url: url('https://aventurasnahistoria.com.br/wp-content/uploads/curiosidades/alegria_windows_xp.jpg');
+}
+*{box-sizing:border-box;}
+html,body{
+  margin:0;padding:0;width:100%;height:100%;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+body{ font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif; font-size:15px; }
+.pixel{ font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-weight:bold; }
+.hidden{ display:none !important; }
+
+/* ---------- boot screen ---------- */
+#boot-screen{
+  position:fixed;inset:0;background:#000;color:#dfe8ff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:9999;transition:opacity .6s ease;font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;
+}
+body.crt-on #boot-screen{ border-radius:var(--screen-radius); }
+#boot-screen.fade-out{ opacity:0;pointer-events:none; }
+#boot-logo{ font-size:30px;font-weight:bold;margin-bottom:24px;letter-spacing:1px;color:#fff;
+  text-shadow:0 0 14px #2a6fdb,0 2px 3px rgba(0,0,0,.6); }
+#boot-bar{ width:220px;height:14px;border:2px solid #6f96e6;padding:2px;margin-bottom:14px;border-radius:3px; }
+#boot-bar-fill{ height:100%;width:0%;background:linear-gradient(90deg,#1c62e0,#5aa6ff);animation:bootfill 1.3s ease forwards; }
+@keyframes bootfill{ to{ width:100%; } }
+#boot-text{ font-size:13px;color:#9fb3e0; }
+
+/* ---------- shutdown screen ---------- */
+#shutdown-screen{
+  position:fixed;inset:0;background:#000;color:#fff;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:17px;font-weight:bold;text-align:center;padding:20px;
+}
+body.crt-on #shutdown-screen{ border-radius:var(--screen-radius); }
+#restart-btn{
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:normal;
+  background:linear-gradient(180deg,#fff,#ece9d8);color:#101010;
+  border:1px solid #6b6250;border-radius:3px;padding:8px 16px;cursor:pointer;
+}
+
+/* ---------- desktop wallpaper ----------
+   Se existir um arquivo "wallpaper.jpg" na mesma pasta do index.html, ele
+   e usado (essa e a forma de voce colocar sua propria imagem, com a licenca
+   que voce tiver - eu nao gero/incorporo essa foto). Se o arquivo nao
+   existir, cai automaticamente na recriacao em CSS abaixo, como fallback. */
+#desktop{
+  position:fixed;inset:0;overflow:hidden;
+  background-repeat:no-repeat;
+  background-image:
+    var(--wallpaper-url),
+    radial-gradient(circle 130px at 78% 12%, rgba(255,255,245,.95), rgba(255,255,220,.25) 55%, transparent 72%),
+    radial-gradient(ellipse 160px 55px at 16% 15%, rgba(255,255,255,.88), transparent 70%),
+    radial-gradient(ellipse 120px 45px at 50% 8%, rgba(255,255,255,.7), transparent 70%),
+    radial-gradient(ellipse 95% 46% at 26% 100%, #6fd35e 0%, #4aab3d 40%, #2f7a2a 62%, transparent 74%),
+    radial-gradient(ellipse 90% 40% at 90% 100%, #7bdb69 0%, #4aa53d 42%, #2c7327 60%, transparent 70%),
+    radial-gradient(ellipse 70% 22% at 55% 92%, rgba(255,255,255,.18), transparent 70%),
+    linear-gradient(180deg, #2b73c9 0%, #4f96e0 30%, #8dc4ef 58%, #cde9fb 80%, #e7f5fc 100%);
+  background-size: cover, auto, auto, auto, auto, auto, auto, auto;
+}
+body.crt-on #desktop{
+  border-radius:var(--screen-radius);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.65), inset 0 0 22px rgba(0,0,0,.55);
+}
+#crt-lines{
+  position:absolute;inset:0;pointer-events:none;z-index:0;display:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 3px);
+}
+body.crt-on #crt-lines{ display:block; }
+#crt-overlay{
+  position:absolute;inset:0;pointer-events:none;z-index:8500;display:none;
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255,255,255,.07), transparent 32%),
+    radial-gradient(ellipse at center, transparent 56%, rgba(0,0,0,.55) 100%);
+  animation:crtFlicker 6s infinite;
+}
+body.crt-on #crt-overlay{ display:block; }
+@keyframes crtFlicker{
+  0%, 95%, 100%{ opacity:1; }
+  96%{ opacity:.93; }
+  97%{ opacity:.98; }
+  98%{ opacity:.95; }
+}
+#desktop-icons{
+  position:absolute;top:14px;left:10px;right:10px;bottom:70px;overflow-y:auto;
+  display:grid;grid-template-columns:repeat(auto-fill, 78px);grid-auto-rows:86px;gap:6px;align-content:start;
+}
+.icon{
+  width:78px;height:82px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  gap:6px;padding-top:8px;border-radius:4px;cursor:pointer;user-select:none;-webkit-user-select:none;
+}
+.icon.selected{ background:rgba(42,111,219,.45);outline:1px dashed rgba(255,255,255,.8); }
+.icon .glyph{
+  width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;position:relative;border-radius:11px;
+  background:linear-gradient(180deg,#eaf6ff 0%,#a9d4f3 30%,#4f9fe0 60%,#1f6fb8 100%);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 3px 5px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.7);
+}
+.icon .glyph::before{
+  content:'';position:absolute;top:3px;left:12%;right:12%;height:42%;
+  background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,0));
+  border-radius:50%;pointer-events:none;
+}
+.icon .label{
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:bold;line-height:1.3;color:#fff;text-align:center;
+  text-shadow:1px 1px 1px #000,0 0 4px rgba(0,0,0,.8);max-width:76px;
+}
+
+#windows-layer{ position:absolute;inset:0;pointer-events:none; }
+
+.window{
+  position:absolute;min-width:260px;max-width:94vw;background:var(--panel);
+  border:1px solid #0a3d91;border-top:none;pointer-events:auto;
+  box-shadow:2px 3px 10px rgba(0,0,0,.5);
+  display:flex;flex-direction:column;border-radius:0 0 6px 6px;
+}
+.window.minimized{ display:none; }
+.titlebar{
+  background:linear-gradient(180deg,#4b91f7 0%,var(--accent1,#1c62e0) 8%,#1657d4 45%,var(--accent2,#0d3aa0) 85%,#0c3fa8 100%);
+  color:#fff;border-radius:7px 7px 0 0;
+  padding:4px 4px 4px 8px;display:flex;align-items:center;gap:6px;
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:bold;
+  cursor:grab;touch-action:none;user-select:none;
+  text-shadow:1px 1px 1px rgba(0,0,0,.4);
+}
+.window.inactive .titlebar{ background:linear-gradient(180deg,#c2cfe6 0%,#9fb0c9 20%,#8393b3 60%,#7484a4 100%);color:#eef2fa; }
+.titlebar .t-icon{ font-size:14px; }
+.titlebar .t-title{ flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.tbtn{
+  width:21px;height:20px;background:linear-gradient(180deg,#7fb1f5,#2e66c9);border:1px solid #08296b;color:#fff;
+  border-radius:3px;font-family:Tahoma,sans-serif;font-size:11px;font-weight:bold;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.6);flex-shrink:0;
+}
+.tbtn.close{ background:linear-gradient(180deg,#ff8a75,#e2402c);border-color:#7a1005; }
+.window-body{ padding:14px;overflow-y:auto;flex:1;font-size:15px;line-height:1.5;max-height:60vh;color:var(--text); }
+.window-body::-webkit-scrollbar{ width:16px; }
+.window-body::-webkit-scrollbar-thumb{ background:linear-gradient(180deg,#e8e8e8,#c8c8c8);border:1px solid #9a9a9a; }
+.window-body::-webkit-scrollbar-track{ background:var(--panel-dark); }
+
+.win-btn{
+  display:block;width:100%;text-align:left;background:linear-gradient(180deg,#ffffff,#ece9d8);color:var(--text);
+  border:1px solid #8a8264;border-radius:3px;box-shadow:inset 0 1px 0 #fff;
+  padding:7px 10px;margin-bottom:8px;font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:14px;cursor:pointer;text-decoration:none;
+}
+.win-btn:hover{ background:linear-gradient(180deg,#fff2c4,#ffe294);border-color:#c99a1f; }
+
+#taskbar{
+  position:absolute;left:0;right:0;bottom:0;height:32px;
+  background:linear-gradient(180deg,#2a70e0 0%,#5c9cf5 6%,#2a70e0 10%,#1c4fc4 55%,#0d3aa0 100%);
+  border-top:1px solid #6fa6f7;display:flex;align-items:center;gap:6px;padding:0 4px;z-index:5000;
+}
+#start-btn{
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:14px;font-style:italic;font-weight:bold;color:#fff;
+  background:linear-gradient(180deg,#7ee45a 0%,#4bc924 15%,#2e9e12 60%,#1c7d08 100%);
+  border:1px solid #0f4d05;border-radius:6px 12px 12px 6px;padding:4px 14px 4px 8px;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);flex-shrink:0;text-shadow:1px 1px 1px rgba(0,0,0,.4);
+}
+#taskbar-windows{ flex:1;display:flex;gap:4px;overflow-x:auto;height:100%;align-items:center; }
+.taskbar-btn{
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:13px;color:#fff;
+  background:linear-gradient(180deg,#5488e8,#2e60c9);border:1px solid #123e91;border-radius:3px;
+  padding:4px 10px;white-space:nowrap;cursor:pointer;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+}
+.taskbar-btn.active{ background:linear-gradient(180deg,#1c4fc4,#123e91);box-shadow:inset 0 1px 3px rgba(0,0,0,.5); }
+#tray{ display:flex;align-items:center;gap:10px;font-size:12px;color:#fff;flex-shrink:0;
+  background:linear-gradient(180deg,#1c4fc4,#123e91);border:1px solid #0a2d70;border-radius:3px 0 0 3px;height:100%;padding:0 10px; }
+#edit-indicator{ color:#ffe28a;font-weight:bold;font-size:11px;animation:blink 1.2s infinite; }
+@keyframes blink{ 50%{ opacity:.3; } }
+#clock{ font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:13px; }
+
+#start-menu{
+  position:fixed;bottom:32px;left:2px;width:320px;max-width:92vw;background:var(--panel);
+  border:1px solid #0a3d91;border-radius:8px 8px 3px 3px;
+  box-shadow:2px 3px 12px rgba(0,0,0,.5);z-index:6000;overflow:hidden;
+}
+.sm-header{
+  background:linear-gradient(180deg,#4b91f7,#1c62e0 55%,#164fc0);color:#fff;
+  padding:8px 10px;display:flex;align-items:center;gap:10px;font-weight:bold;font-size:14px;
+  text-shadow:1px 1px 1px rgba(0,0,0,.4);
+}
+.sm-avatar{
+  width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,.6);flex-shrink:0;
+  background:linear-gradient(180deg,#eaf6ff,#4f9fe0);display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:bold;color:#0d3aa0;
+}
+.sm-columns{ display:flex; }
+.sm-col{ flex:1;padding:5px;min-width:0; }
+.sm-col.sm-left{ background:#fff; }
+.sm-col.sm-right{ background:linear-gradient(90deg,#dce8fb,#eaf1fc);border-left:1px solid #b9c9e6; }
+.sm-item{
+  display:flex;align-items:center;gap:8px;padding:6px 7px;cursor:pointer;font-size:12px;
+  color:var(--text);border-radius:3px;line-height:1.25;
+}
+.sm-item .sm-icon{ font-size:16px;width:18px;text-align:center;flex-shrink:0; }
+.sm-item:hover{ background:linear-gradient(180deg,#5c9cf5,#2a70e0);color:#fff; }
+.sm-sep{ height:1px;background:#d4d0c8;margin:5px 4px; }
+.sm-footer{
+  background:linear-gradient(180deg,#dce8fb,#c3d6f2);border-top:1px solid #b9c9e6;
+  padding:6px;display:flex;justify-content:flex-end;
+}
+.sm-shutdown-btn{
+  display:flex;align-items:center;gap:6px;background:linear-gradient(180deg,#ff8a75,#e2402c);
+  color:#fff;font-weight:bold;font-size:12px;border:1px solid #7a1005;border-radius:14px;
+  padding:5px 12px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+}
+
+.context-menu{ position:fixed;background:var(--panel);border:1px solid #0a3d91;z-index:7000;box-shadow:2px 3px 8px rgba(0,0,0,.5);border-radius:3px; }
+.ctx-item{ padding:7px 14px;cursor:pointer;font-size:13px;color:var(--text); }
+.ctx-item:hover{ background:linear-gradient(180deg,#5c9cf5,#2a70e0);color:#fff; }
+
+[contenteditable="true"]{ outline:2px dashed #e2402c;outline-offset:2px;background:rgba(226,64,44,.07); }
+.edit-btn{
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,#fff,#ece9d8);color:var(--text);
+  border:1px solid #8a8264;border-radius:3px;
+  padding:4px 9px;font-size:13px;cursor:pointer;margin-right:6px;margin-top:6px;
+}
+.edit-btn.danger{ background:linear-gradient(180deg,#ff8a75,#e2402c);color:#fff;border-color:#7a1005; }
+.list-item{ border:1px solid #c8c2ac;background:#f7f5ec;padding:8px;margin-bottom:8px;border-radius:3px; }
+.row-actions{ margin-top:6px; }
+
+.gb-form textarea, .gb-form input{
+  width:100%;background:#fff;color:var(--text);border:1px solid #7f9db6;border-radius:2px;
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:14px;padding:6px;margin-bottom:8px;
+}
+.gb-entry{ border-left:3px solid #1c62e0;background:#f2f6fd;padding:6px 10px;margin-bottom:10px; }
+.gb-meta{ font-size:12px;color:var(--text-dim); }
+
+.avatar{
+  width:64px;height:64px;border:1px solid rgba(255,255,255,.55);border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#eaf6ff 0%,#a9d4f3 30%,#4f9fe0 60%,#1f6fb8 100%);
+  font-family:Tahoma,sans-serif;font-size:26px;font-weight:bold;color:#fff;
+  box-shadow:0 3px 5px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.7);
+}
+.qr-wrap{ background:#fff;padding:8px;width:118px;margin:10px auto;border:1px solid #c8c2ac; }
+
+@media (max-width:560px){
+  body{ font-size:14px; }
+  .window{ min-width:0;width:92vw !important;left:4vw !important; }
+  #desktop-icons{ grid-template-columns:repeat(auto-fill, 70px); }
+  .icon{ width:70px; }
+  #start-menu{ width:94vw; }
+  .sm-item{ font-size:11px; }
+}
+
+/* ---------- login / troca de usuario ---------- */
+#login-screen{
+  position:fixed;inset:0;z-index:9800;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#2b73c9 0%,#4f96e0 30%,#8dc4ef 58%,#cde9fb 80%,#e7f5fc 100%);
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;padding:20px;
+}
+body.crt-on #login-screen{ border-radius:var(--screen-radius); }
+#login-screen.hidden{ display:none; }
+.login-card{
+  width:340px;max-width:100%;background:var(--panel);border:1px solid #0a3d91;border-radius:10px;
+  box-shadow:2px 4px 20px rgba(0,0,0,.5);overflow:hidden;
+}
+.login-head{
+  background:linear-gradient(180deg,#4b91f7,#1c62e0 55%,#164fc0);color:#fff;padding:12px 14px;
+  font-weight:bold;font-size:15px;text-shadow:1px 1px 1px rgba(0,0,0,.4);
+}
+.login-body{ padding:14px;max-height:60vh;overflow-y:auto; }
+.login-note{ font-size:12px;color:var(--text-dim);margin:0 0 10px; }
+.profile-tile{
+  display:flex;align-items:center;gap:10px;padding:8px;border:1px solid #c8c2ac;border-radius:6px;
+  margin-bottom:8px;cursor:pointer;background:#f7f5ec;
+}
+.profile-tile:hover, .profile-tile.selected{ background:linear-gradient(180deg,#5c9cf5,#2a70e0);color:#fff; }
+.profile-tile .avatar{ width:36px;height:36px;margin:0;font-size:15px;flex-shrink:0; }
+.profile-tile .avatar img{ width:100%;height:100%;object-fit:cover;border-radius:14px; }
+.login-field{ margin-bottom:8px; }
+.login-field label{ display:block;font-size:12px;color:var(--text-dim);margin-bottom:3px; }
+.login-field input{
+  width:100%;background:#fff;color:var(--text);border:1px solid #7f9db6;border-radius:2px;
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:14px;padding:6px;
+}
+.login-actions{ display:flex;gap:8px;margin-top:10px; }
+.login-error{ color:#b8281a;font-size:12px;margin:6px 0 0; }
+
+/* ---------- explorer (projetos) ---------- */
+.folder-tile{
+  display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #c8c2ac;background:#f7f5ec;
+  border-radius:3px;margin-bottom:8px;cursor:pointer;
+}
+.folder-tile .fico{ font-size:22px; }
+.breadcrumb{ font-size:13px;color:var(--text-dim);margin-bottom:10px; }
+
+/* ---------- config ---------- */
+.cfg-section{ border:1px solid #c8c2ac;background:#f7f5ec;padding:10px;border-radius:3px;margin-bottom:12px; }
+.cfg-section h4{ margin:0 0 8px;font-size:12px; }
+.cfg-row{ display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid #e2ddc9; }
+.cfg-row:first-child{ border-top:none; }
+.cfg-row .cfg-label{ font-size:13px; }
+.cfg-btnrow{ display:flex;gap:4px;flex-shrink:0; }
+
+/* ---------- calculadora ---------- */
+.calc-display{
+  background:#0c1a0f;color:#8dff9a;font-family:'Courier New',monospace;font-size:26px;text-align:right;
+  padding:12px 10px;border:1px solid #3a2f5c;border-radius:4px;margin-bottom:8px;overflow-x:auto;white-space:nowrap;
+}
+.calc-grid{ display:grid;grid-template-columns:repeat(4,1fr);gap:6px; }
+.calc-btn{
+  font-family:Tahoma,Verdana,'Segoe UI',Arial,sans-serif;font-size:16px;padding:14px 0;text-align:center;
+  background:linear-gradient(180deg,#ffffff,#ece9d8);color:var(--text);border:1px solid #8a8264;border-radius:4px;
+  cursor:pointer;box-shadow:inset 0 1px 0 #fff;
+}
+.calc-btn:active{ background:linear-gradient(180deg,#dcd8c4,#ece9d8); }
+.calc-btn.op{ background:linear-gradient(180deg,#7fb1f5,#2e66c9);color:#fff;border-color:#123e91; }
+.calc-btn.eq{ background:linear-gradient(180deg,#7ee45a,#2e9e12);color:#fff;border-color:#0f4d05; }
+.calc-btn.wide{ grid-column:span 2; }
+.calc-btn.clr{ background:linear-gradient(180deg,#ff8a75,#e2402c);color:#fff;border-color:#7a1005; }
+
+/* ---------- paint ---------- */
+.paint-toolbar{ display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;align-items:center; }
+.paint-tool{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;
+  background:linear-gradient(180deg,#ffffff,#ece9d8);border:1px solid #8a8264;border-radius:4px;cursor:pointer;
+}
+.paint-tool.active{ background:linear-gradient(180deg,#7fb1f5,#2e66c9);color:#fff; }
+.paint-canvas-wrap{ position:relative;border:1px solid #332a54;background:#fff;touch-action:none; }
+.paint-canvas-wrap canvas{ position:absolute;left:0;top:0;width:100%;height:100%; }
+.paint-row{ display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:13px;flex-wrap:wrap; }
+.paint-row input[type=range]{ flex:1;min-width:60px; }
+.paint-swatch{ width:20px;height:20px;border:1px solid #555;border-radius:3px;cursor:pointer;flex-shrink:0; }
+.paint-swatch.active{ outline:2px solid #1c62e0;outline-offset:1px; }
+
+/* ---------- terminal ---------- */
+.term-screen{
+  background:#050a05;color:#7dff8a;font-family:'Courier New',monospace;font-size:13px;line-height:1.4;
+  padding:8px;height:220px;overflow-y:auto;border:1px solid #333;white-space:pre-wrap;word-break:break-word;
+}
+.term-inputrow{ display:flex;align-items:center;gap:4px;margin-top:6px;font-family:'Courier New',monospace; }
+.term-inputrow span{ color:#7dff8a;font-size:13px; }
+.term-inputrow input{
+  flex:1;background:#050a05;color:#7dff8a;border:1px solid #333;font-family:'Courier New',monospace;
+  font-size:13px;padding:5px;
+}
+</style>
+</head>
+<body>
+
+<div id="boot-screen">
+  <div id="boot-logo">RaulXP</div>
+  <div id="boot-bar"><div id="boot-bar-fill"></div></div>
+  <div id="boot-text">carregando o cantinho...</div>
+</div>
+
+<div id="shutdown-screen" class="hidden">
+  <div id="shutdown-msg">Encerrando o sistema...</div>
+  <button id="restart-btn" class="hidden">Ligar novamente</button>
+</div>
+
+<div id="login-screen" class="hidden">
+  <div class="login-card">
+    <div class="login-head">RaulXP — entrar</div>
+    <div class="login-body" id="login-body"></div>
+  </div>
+</div>
+
+<div id="desktop">
+  <div id="crt-lines"></div>
+  <div id="crt-overlay"></div>
+  <div id="desktop-icons"></div>
+  <div id="windows-layer"></div>
+
+  <div id="context-menu" class="context-menu hidden">
+    <div class="ctx-item" data-action="refresh">🔄 Atualizar</div>
+    <div class="ctx-item" data-action="about-pc">🖥️ Sobre este PC</div>
+  </div>
+
+  <div id="taskbar">
+    <button id="start-btn" type="button"><span>▦</span> Iniciar</button>
+    <div id="start-menu" class="hidden"></div>
+    <div id="taskbar-windows"></div>
+    <div id="tray">
+      <span id="edit-indicator" class="hidden">✏️ EDIÇÃO</span>
+      <span id="clock">00:00</span>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="import-file-input" accept="application/json" class="hidden">
+<input type="file" id="photo-file-input" accept="image/*" class="hidden">
+<input type="file" id="wallpaper-file-input" accept="image/*" class="hidden">
+<input type="file" id="note-image-input" accept="image/*" class="hidden">
+
+<script>
+/* ============================================================
+   CONFIG — EDITE AQUI O CONTEÚDO PADRÃO DO SITE.
+   Isso só é usado na primeira visita (sem dados salvos ainda).
+   Depois disso, o "Modo Edição" (menu Iniciar) salva tudo no
+   localStorage do navegador — veja a seção ESTADO abaixo.
+============================================================ */
+const CONFIG = {
+  profile: {
+    name: "Otavio",
+    tagline: "dev de sites e joguinhos estranhos",
+    bio: "Sou um jovem estudante e apreciador de tecnologia e nerdices em geral - curto programar, criar sites e joguinhos nas horas vagas, e sempre to enfiado em algum projeto novo por aqui. Praticamente tudo nessa pagina e editavel, inclusive esse texto.",
+    photo: "",
+    wallpaper: ""
+  },
+  links: [
+    { label: "📁 Meus projetos", action: "projetos" },
+    { label: "📸 Instagram", url: "https://www.instagram.com/raulxp__?igsh=MzdtNG9lZnM5eHMw" }
+  ],
+  posts: [
+    {
+      title: "Bem-vindo(a) ao meu cantinho",
+      date: "08/08/2026",
+      content: "Esse blog e meu espaco pessoal e literalmente tudo aqui pode virar outra coisa - texto, posts, projetos, links. Ativa o Modo Edicao la no menu Iniciar pra ver como funciona: e so clicar em cima do que quiser mudar.\n\nAinda to montando as coisas por aqui, mas a ideia e ir postando o que der vontade, do jeito que der vontade.",
+      folderId: null
+    },
+    {
+      title: "Por que eu gosto de esconder segredinhos em sites",
+      date: "08/08/2026",
+      content: "Tem algo muito satisfatorio em construir uma pagina que parece simples na superficie mas tem camadas escondidas por baixo - um clique certo, um codigo digitado no lugar certo, um detalhe que so quem presta atencao percebe.\n\nEsse site tambem tem uma coisinha ou outra escondida por ai. Boa sorte procurando 👀",
+      folderId: null
+    }
+  ],
+  notes: [
+    { id: "n1", title: "primeiro recado", content: "Isso aqui e um recadinho escrito no Bloco de Notas. Da pra prender imagem nele tambem, e organizar tudo em pastas la nos Projetos.", image: "", date: "08/08/2026", folderId: null }
+  ],
+  folders: [
+    { id: "f1", name: "Ideias soltas" }
+  ],
+  trash: [],
+  guestbook: [
+    { name: "Otavio", date: "08/08/2026", msg: "Deixa um recado ai embaixo! Quero saber quem passou por aqui 👀" }
+  ],
+  appOrder: [],
+  appNames: {}
+};
+
+/* ============================================================
+   PERFIS / LOGIN (100% local — sem servidor)
+   IMPORTANTE: isso NAO e um sistema de contas seguro de verdade.
+   Como o site e um unico arquivo HTML estatico, sem backend, a
+   "senha" fica salva sem criptografia no localStorage do proprio
+   navegador. Serve pra separar quem esta usando o PC agora e dar
+   um desktop proprio pra cada pessoa nesse navegador — nao serve
+   pra proteger informacao sensivel de verdade.
+============================================================ */
+const PROFILES_KEY = 'raulxp_profiles_v2';
+const CURRENT_KEY = 'raulxp_current_v2';
+function dataKey(id){ return 'raulxp_data_v2_'+id; }
+function genId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+function loadProfiles(){
+  try{ const raw = localStorage.getItem(PROFILES_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return [];
+}
+function saveProfiles(list){ try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(list)); }catch(e){} }
+function getCurrentProfileId(){ try{ return localStorage.getItem(CURRENT_KEY); }catch(e){ return null; } }
+function setCurrentProfileId(id){ try{ localStorage.setItem(CURRENT_KEY, id||''); }catch(e){} }
+
+let profiles = loadProfiles();
+let currentProfile = null;
+
+/* ============================================================
+   ESTADO / PERSISTENCIA (localStorage, por perfil)
+============================================================ */
+let siteData = null;
+let currentPostIndex = null;
+let currentNoteIndex = null;
+
+function defaultState(){ return JSON.parse(JSON.stringify(CONFIG)); }
+
+function normalizeState(data){
+  const base = defaultState();
+  data = data || {};
+  return {
+    profile: Object.assign({}, base.profile, data.profile || {}),
+    links: Array.isArray(data.links) ? data.links : base.links,
+    posts: Array.isArray(data.posts) ? data.posts : base.posts,
+    notes: Array.isArray(data.notes) ? data.notes : base.notes,
+    folders: Array.isArray(data.folders) ? data.folders : base.folders,
+    trash: Array.isArray(data.trash) ? data.trash : base.trash,
+    guestbook: Array.isArray(data.guestbook) ? data.guestbook : base.guestbook,
+    appOrder: Array.isArray(data.appOrder) ? data.appOrder : base.appOrder,
+    appNames: (data.appNames && typeof data.appNames==='object') ? data.appNames : base.appNames
+  };
+}
+
+function loadStateFor(id){
+  try{
+    const raw = localStorage.getItem(dataKey(id));
+    if(raw) return normalizeState(JSON.parse(raw));
+  }catch(e){}
+  return defaultState();
+}
+function saveState(){
+  if(!currentProfile) return;
+  try{ localStorage.setItem(dataKey(currentProfile.id), JSON.stringify(siteData)); }catch(e){}
+}
+function resetState(){
+  if(confirm('Isso apaga suas edicoes salvas neste navegador (nesse usuario) e volta pro padrao. Continuar?')){
+    if(currentProfile) localStorage.removeItem(dataKey(currentProfile.id));
+    siteData = defaultState();
+    currentPostIndex = null;
+    applyWallpaper();
+    renderDesktopIcons();
+    Object.keys(openWindows).forEach(refreshWindowContent);
+  }
+}
+function applyWallpaper(){
+  const url = siteData.profile.wallpaper;
+  if(url){ document.documentElement.style.setProperty('--wallpaper-url', "url('"+url.replace(/'/g,"\\'")+"')"); }
+  else{ document.documentElement.style.setProperty('--wallpaper-url', "url('https://aventurasnahistoria.com.br/wp-content/uploads/curiosidades/alegria_windows_xp.jpg')"); }
+}
+function exportState(){
+  const blob = new Blob([JSON.stringify(siteData,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'meu-site-dados.json';
+  a.click();
+}
+function importState(file){
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      siteData = normalizeState(data);
+      saveState();
+      currentPostIndex = null;
+      Object.keys(openWindows).forEach(refreshWindowContent);
+      alert('Importado com sucesso!');
+    }catch(err){
+      alert('Arquivo invalido.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ============================================================
+   APPS / ICONES DA AREA DE TRABALHO (estrutura fixa)
+============================================================ */
+const APPS = [
+  { id:'sobre',    label:'Sobre mim',      glyph:'🧑‍💻', title:'sobre_mim.exe' },
+  { id:'internet', label:'Internet',       glyph:'🌐', title:'navegador.exe' },
+  { id:'blog',     label:'Blog',           glyph:'📝', title:'blog.exe' },
+  { id:'projetos', label:'Projetos',       glyph:'🗂️', title:'projetos.exe' },
+  { id:'recados',  label:'Recados',        glyph:'💬', title:'recados.exe' },
+  { id:'bloco',    label:'Bloco de Notas', glyph:'🗒️', title:'bloco_de_notas.exe' },
+  { id:'paint',    label:'Paint',          glyph:'🎨', title:'paint.exe' },
+  { id:'calc',     label:'Calculadora',    glyph:'🧮', title:'calculadora.exe' },
+  { id:'prompt',   label:'Prompt',         glyph:'⌨️', title:'prompt_de_comando.exe' },
+  { id:'config',   label:'Configurações',  glyph:'⚙️', title:'configuracoes.exe' },
+  { id:'lixeira',  label:'Lixeira',        glyph:'🗑️', title:'Lixeira' },
+  { id:'apoie',    label:'Apoie',          glyph:'☕', title:'apoie.exe' }
+];
+const ARR_TO_WIN = { links:'sobre', posts:'blog', guestbook:'recados' };
+function getAppOrder(){
+  const ids = APPS.map(function(a){ return a.id; });
+  let order = (siteData.appOrder||[]).filter(function(id){ return ids.indexOf(id)!==-1; });
+  ids.forEach(function(id){ if(order.indexOf(id)===-1) order.push(id); });
+  return order;
+}
+function getOrderedApps(){
+  return getAppOrder().map(function(id){ return APPS.filter(function(a){ return a.id===id; })[0]; }).filter(Boolean);
+}
+function getAppLabel(app){ return (siteData.appNames && siteData.appNames[app.id]) || app.label; }
+function moveApp(id, dir){
+  const order = getAppOrder();
+  const i = order.indexOf(id);
+  const j = i+dir;
+  if(i<0 || j<0 || j>=order.length) return;
+  const tmp = order[i]; order[i]=order[j]; order[j]=tmp;
+  siteData.appOrder = order;
+  saveState();
+  renderDesktopIcons(); renderStartMenu();
+  if(openWindows['config']) refreshWindowContent('config');
+}
+function renameApp(id){
+  const app = APPS.filter(function(a){ return a.id===id; })[0];
+  if(!app) return;
+  const cur = getAppLabel(app);
+  const val = prompt('Novo nome pro app:', cur);
+  if(val!==null && val.trim()){
+    siteData.appNames = siteData.appNames || {};
+    siteData.appNames[id] = val.trim();
+    saveState();
+    renderDesktopIcons(); renderStartMenu();
+    if(openWindows['config']) refreshWindowContent('config');
+  }
+}
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+/* ============================================================
+   GERENCIADOR DE JANELAS
+============================================================ */
+let zTop = 100;
+let openWindows = {};
+let cascadeOffset = 0;
+let editMode = false;
+const CRT_KEY = 'otavio_os_crt_v1';
+let crtOn = true;
+try{ crtOn = localStorage.getItem(CRT_KEY) !== 'off'; }catch(e){}
+
+function focusWindow(id){
+  const win = openWindows[id];
+  if(!win) return;
+  zTop += 1;
+  win.el.style.zIndex = zTop;
+  document.querySelectorAll('.window').forEach(function(w){ w.classList.add('inactive'); });
+  win.el.classList.remove('inactive');
+  document.querySelectorAll('.taskbar-btn').forEach(function(b){ b.classList.remove('active'); });
+  const tb = document.getElementById('tb-'+id);
+  if(tb) tb.classList.add('active');
+}
+
+function openWindow(id){
+  const app = APPS.filter(function(a){ return a.id===id; })[0];
+  if(!app) return;
+  if(openWindows[id]){
+    openWindows[id].el.classList.remove('minimized');
+    focusWindow(id);
+    return;
+  }
+  const el = document.createElement('div');
+  el.className = 'window';
+  el.id = 'win-'+id;
+  const mobile = window.innerWidth < 560;
+  const w = mobile ? Math.round(window.innerWidth*0.92) : 360;
+  const x = mobile ? Math.round(window.innerWidth*0.04) : 60+cascadeOffset;
+  const y = mobile ? 40 : 50+cascadeOffset;
+  cascadeOffset = (cascadeOffset+28) % 160;
+  el.style.left = x+'px';
+  el.style.top = y+'px';
+  el.style.width = w+'px';
+  el.innerHTML =
+    '<div class="titlebar" data-drag="'+id+'">'+
+      '<span class="t-icon">'+app.glyph+'</span>'+
+      '<span class="t-title">'+app.title+'</span>'+
+      '<span class="tbtn" data-min="'+id+'">_</span>'+
+      '<span class="tbtn" data-max="'+id+'">▢</span>'+
+      '<span class="tbtn close" data-close="'+id+'">X</span>'+
+    '</div>'+
+    '<div class="window-body" id="body-'+id+'"></div>';
+  document.getElementById('windows-layer').appendChild(el);
+  openWindows[id] = { el: el };
+  refreshWindowContent(id);
+  makeDraggable(el, el.querySelector('.titlebar'));
+  el.addEventListener('pointerdown', function(){ focusWindow(id); });
+  addTaskbarButton(id, app);
+  focusWindow(id);
+  playBeep();
+}
+
+function closeWindow(id){
+  const win = openWindows[id];
+  if(!win) return;
+  win.el.remove();
+  delete openWindows[id];
+  const tb = document.getElementById('tb-'+id);
+  if(tb) tb.remove();
+  playBeep();
+}
+function minimizeWindow(id){
+  const win = openWindows[id];
+  if(win) win.el.classList.add('minimized');
+}
+function toggleMaximize(id){
+  const win = openWindows[id];
+  if(!win) return;
+  const el = win.el;
+  el.classList.toggle('maxed');
+  if(el.classList.contains('maxed')){
+    el.dataset.prevStyle = el.getAttribute('style') || '';
+    el.style.left = '2vw'; el.style.top = '10px'; el.style.width = '96vw';
+    el.querySelector('.window-body').style.maxHeight = '70vh';
+  }else{
+    el.setAttribute('style', el.dataset.prevStyle || '');
+  }
+}
+function addTaskbarButton(id, app){
+  const bar = document.getElementById('taskbar-windows');
+  const btn = document.createElement('div');
+  btn.className = 'taskbar-btn';
+  btn.id = 'tb-'+id;
+  btn.textContent = app.glyph+' '+app.title;
+  btn.addEventListener('click', function(){
+    const win = openWindows[id];
+    if(!win) return;
+    if(win.el.classList.contains('minimized')){
+      win.el.classList.remove('minimized');
+      focusWindow(id);
+    }else{
+      win.el.classList.add('minimized');
+    }
+  });
+  bar.appendChild(btn);
+}
+function makeDraggable(el, handle){
+  let dragging=false, startX=0, startY=0, origX=0, origY=0;
+  handle.addEventListener('pointerdown', function(e){
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    const rect = el.getBoundingClientRect();
+    origX = rect.left; origY = rect.top;
+    try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  handle.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    let nx = origX + (e.clientX-startX);
+    let ny = origY + (e.clientY-startY);
+    nx = Math.max(-el.offsetWidth+60, Math.min(nx, window.innerWidth-60));
+    ny = Math.max(0, Math.min(ny, window.innerHeight-90));
+    el.style.left = nx+'px';
+    el.style.top = ny+'px';
+  });
+  handle.addEventListener('pointerup', function(){ dragging=false; });
+  handle.addEventListener('pointercancel', function(){ dragging=false; });
+}
+
+/* ============================================================
+   HELPERS
+============================================================ */
+function escapeHTML(str){
+  return String(str==null? '': str).replace(/[&<>"']/g, function(m){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+  });
+}
+function setNested(obj, path, value){
+  const keys = path.split('.');
+  let cur = obj;
+  for(let i=0;i<keys.length-1;i++){ cur = cur[keys[i]]; }
+  cur[keys[keys.length-1]] = value;
+}
+function todayStr(){ return new Date().toLocaleDateString('pt-BR'); }
+
+function wireEditableFields(container){
+  container.querySelectorAll('[data-bind]').forEach(function(el){
+    if(editMode){
+      el.setAttribute('contenteditable','true');
+      el.addEventListener('blur', onFieldBlur);
+    }else{
+      el.removeAttribute('contenteditable');
+    }
+  });
+}
+function onFieldBlur(e){
+  const el = e.target;
+  setNested(siteData, el.dataset.bind, el.innerText);
+  saveState();
+  const winEl = el.closest('.window');
+  if(winEl) refreshWindowContent(winEl.id.replace('win-',''));
+}
+
+/* ============================================================
+   CONTEUDO DAS JANELAS
+============================================================ */
+function refreshWindowContent(id){
+  const body = document.getElementById('body-'+id);
+  if(!body) return;
+  if(id==='sobre') body.innerHTML = renderSobre();
+  else if(id==='internet') body.innerHTML = renderNavegador();
+  else if(id==='blog') body.innerHTML = renderBlogList();
+  else if(id==='projetos') body.innerHTML = renderProjetos();
+  else if(id==='recados') body.innerHTML = renderRecados();
+  else if(id==='bloco') body.innerHTML = renderBloco();
+  else if(id==='paint'){ body.innerHTML = renderPaint(); initPaint(); }
+  else if(id==='calc') body.innerHTML = renderCalc();
+  else if(id==='prompt'){ body.innerHTML = renderPrompt(); initPrompt(); }
+  else if(id==='config') body.innerHTML = renderConfig();
+  else if(id==='lixeira') body.innerHTML = renderLixeira();
+  else if(id==='apoie'){ body.innerHTML = renderApoie(); drawFakeQR(); }
+  else return;
+  wireEditableFields(body);
+}
+
+function renderLinkButtons(){
+  return siteData.links.map(function(l){
+    if(l.action){
+      return '<button class="win-btn" data-open="'+escapeHTML(l.action)+'">'+escapeHTML(l.label)+'</button>';
+    }
+    return '<a class="win-btn" href="'+escapeHTML(l.url||'#')+'" target="_blank" rel="noopener">'+escapeHTML(l.label)+'</a>';
+  }).join('');
+}
+
+/* ---------- navegador.exe : iframe simples com barra de endereco ----------
+   obs: sites grandes (google, instagram, banco etc.) bloqueiam ser exibidos
+   dentro de outra pagina por politica de seguranca DELES (X-Frame-Options).
+   isso nao tem como ser contornado do nosso lado - por isso o botao
+   "abrir em nova aba" sempre acompanha, como saida garantida. */
+const NAV_HOME = 'https://pt.wikipedia.org';
+function renderNavegador(){
+  return (
+    '<div style="display:flex;gap:4px;margin-bottom:8px;align-items:stretch;">'+
+      '<button class="tbtn" data-navback="1" title="voltar" style="width:26px;height:26px;flex-shrink:0;">←</button>'+
+      '<button class="tbtn" data-navfwd="1" title="avancar" style="width:26px;height:26px;flex-shrink:0;">→</button>'+
+      '<input type="text" id="nav-url" placeholder="digite um site ou termo..." value="'+escapeHTML(NAV_HOME)+'" '+
+        'style="flex:1;min-width:0;background:#fff;color:var(--text);border:1px solid #7f9db6;font-family:Tahoma,Verdana,sans-serif;font-size:14px;padding:4px 6px;">'+
+      '<button class="edit-btn" data-navgo="1" style="margin:0;flex-shrink:0;">Ir</button>'+
+    '</div>'+
+    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">'+
+      'alguns sites nao deixam abrir aqui dentro (regra deles, nao nossa) — usa "abrir em nova aba" se ficar em branco.'+
+    '</div>'+
+    '<iframe id="nav-frame" src="'+escapeHTML(NAV_HOME)+'" style="width:100%;height:260px;border:1px solid #332a54;background:#fff;"></iframe>'+
+    '<div style="margin-top:8px;"><a id="nav-newtab" href="'+escapeHTML(NAV_HOME)+'" target="_blank" rel="noopener" class="edit-btn" style="text-decoration:none;display:inline-block;">↗ abrir em nova aba</a></div>'
+  );
+}
+function navigateBrowser(raw){
+  const val = (raw||'').trim();
+  if(!val) return;
+  const looksLikeUrl = /^https?:\/\//i.test(val) || /^[a-z0-9-]+(\.[a-z0-9-]+)+([\/?#].*)?$/i.test(val);
+  let frameUrl, tabUrl;
+  if(looksLikeUrl){
+    frameUrl = /^https?:\/\//i.test(val) ? val : 'https://'+val;
+    tabUrl = frameUrl;
+  }else{
+    frameUrl = 'https://pt.wikipedia.org/wiki/Especial:Pesquisar?search='+encodeURIComponent(val)+'&fulltext=1';
+    tabUrl = 'https://www.google.com/search?q='+encodeURIComponent(val);
+  }
+  const frame = document.getElementById('nav-frame');
+  const newTab = document.getElementById('nav-newtab');
+  if(frame) frame.src = frameUrl;
+  if(newTab) newTab.href = tabUrl;
+}
+
+function renderSobre(){
+  const p = siteData.profile;
+  const initial = (p.name||'?').trim().charAt(0).toUpperCase() || '?';
+  const linksSection = editMode ? renderLinksEditable() : renderLinkButtons();
+  const avatarInner = p.photo ? '<img src="'+p.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : escapeHTML(initial);
+  return (
+    '<div class="avatar">'+avatarInner+'</div>'+
+    (editMode? '<div style="text-align:center;margin-bottom:8px;"><button class="edit-btn" data-open="config">⚙️ trocar foto / configuracoes</button></div>' : '')+
+    '<h2 class="pixel" data-bind="profile.name" style="font-size:13px;text-align:center;margin:0 0 8px;">'+escapeHTML(p.name)+'</h2>'+
+    '<p data-bind="profile.tagline" style="text-align:center;color:var(--text-dim);margin-top:0;white-space:pre-wrap;">'+escapeHTML(p.tagline)+'</p>'+
+    '<p data-bind="profile.bio" style="white-space:pre-wrap;">'+escapeHTML(p.bio)+'</p>'+
+    '<div style="margin-top:14px;">'+linksSection+'</div>'
+  );
+}
+
+function renderLinksEditable(){
+  let html = '<div class="pixel" style="font-size:11px;margin-bottom:8px;">links (edicao)</div>';
+  if(siteData.links.length===0) html += '<p style="color:var(--text-dim);">nenhum link ainda.</p>';
+  siteData.links.forEach(function(l,i){
+    html += '<div class="list-item">'+
+      '<div data-bind="links.'+i+'.label" style="white-space:pre-wrap;">'+escapeHTML(l.label)+'</div>'+
+      '<div style="font-size:14px;color:var(--text-dim);margin-top:4px;">'+(l.action? ('abre janela: '+escapeHTML(l.action)) : escapeHTML(l.url||'(sem link)'))+'</div>'+
+      '<div class="row-actions">'+
+        (l.action? '' : '<button class="edit-btn" data-editurl="links|'+i+'">🔗 url</button>')+
+        '<button class="edit-btn danger" data-removeitem="links|'+i+'">🗑️ remover</button>'+
+      '</div>'+
+    '</div>';
+  });
+  html += '<button class="edit-btn" data-addlink="1">➕ adicionar link</button>';
+  return html;
+}
+
+function renderBlogList(){
+  if(currentPostIndex!==null && siteData.posts[currentPostIndex]){
+    const i = currentPostIndex;
+    const post = siteData.posts[i];
+    return (
+      '<button class="edit-btn" data-backtolist="1">← voltar</button>'+
+      '<h3 class="pixel" data-bind="posts.'+i+'.title" style="font-size:12px;margin:12px 0 4px;white-space:pre-wrap;">'+escapeHTML(post.title)+'</h3>'+
+      '<div style="font-size:14px;color:var(--text-dim);margin-bottom:10px;">'+escapeHTML(post.date)+'</div>'+
+      '<div data-bind="posts.'+i+'.content" style="white-space:pre-wrap;">'+escapeHTML(post.content)+'</div>'+
+      (editMode? '<div class="row-actions">'+
+          '<button class="edit-btn" data-moveitem="post|'+i+'">📂 mover pra pasta</button>'+
+          '<button class="edit-btn danger" data-removeitem="posts|'+i+'">🗑️ apagar post</button>'+
+        '</div>' : '')
+    );
+  }
+  let html = '<div class="pixel" style="font-size:11px;margin-bottom:10px;">ultimos posts</div>';
+  if(siteData.posts.length===0) html += '<p style="color:var(--text-dim);">nenhum post ainda.</p>';
+  siteData.posts.forEach(function(p,i){
+    html += '<div class="list-item" style="cursor:pointer;" data-viewpost="'+i+'">'+
+      '<div>📄 '+escapeHTML(p.title)+'</div>'+
+      '<div style="font-size:14px;color:var(--text-dim);">'+escapeHTML(p.date)+'</div>'+
+    '</div>';
+  });
+  if(editMode) html += '<button class="edit-btn" data-addpost="1">➕ novo post</button>';
+  return html;
+}
+
+/* ---------- projetos.exe : explorador de pastas com posts do blog e recados ---------- */
+let currentFolderId = null;
+function folderName(id){
+  if(!id) return null;
+  const f = siteData.folders.filter(function(x){ return x.id===id; })[0];
+  return f ? f.name : null;
+}
+function renderProjetos(){
+  if(explorerOpenType==='post' && siteData.posts[currentPostIndex]!==undefined){
+    const i = currentPostIndex, post = siteData.posts[i];
+    return '<button class="edit-btn" data-closeitem="1">← voltar</button>'+
+      '<h3 class="pixel" style="font-size:12px;margin:12px 0 4px;">'+escapeHTML(post.title)+'</h3>'+
+      '<div style="font-size:14px;color:var(--text-dim);margin-bottom:10px;">'+escapeHTML(post.date)+'</div>'+
+      '<div style="white-space:pre-wrap;">'+escapeHTML(post.content)+'</div>';
+  }
+  if(explorerOpenType==='note' && siteData.notes[currentNoteIndex]!==undefined){
+    const n = siteData.notes[currentNoteIndex];
+    return '<button class="edit-btn" data-closeitem="1">← voltar</button>'+
+      (n.image? '<img src="'+n.image+'" style="max-width:100%;border-radius:3px;margin:10px 0;display:block;">' : '')+
+      '<h3 class="pixel" style="font-size:12px;margin:12px 0 4px;">'+escapeHTML(n.title)+'</h3>'+
+      '<div style="font-size:14px;color:var(--text-dim);margin-bottom:10px;">'+escapeHTML(n.date)+'</div>'+
+      '<div style="white-space:pre-wrap;">'+escapeHTML(n.content)+'</div>';
+  }
+  if(currentFolderId===null){
+    let html = '<div class="pixel" style="font-size:11px;margin-bottom:10px;">projetos — pastas</div>';
+    html += '<div style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">aqui ficam seus posts do blog e recados, organizados em pastas — tipo um explorador de arquivos.</div>';
+    siteData.folders.forEach(function(f){
+      const count = siteData.posts.filter(function(p){return p.folderId===f.id;}).length + siteData.notes.filter(function(n){return n.folderId===f.id;}).length;
+      html += '<div class="folder-tile" data-openfolder="'+f.id+'"><span class="fico">📁</span><div style="flex:1;">'+escapeHTML(f.name)+'<div style="font-size:12px;color:var(--text-dim);">'+count+' item(ns)</div></div>'+
+        (editMode? '<button class="edit-btn danger" data-delfolder="'+f.id+'" style="margin:0;" onclick="event.stopPropagation();">🗑️</button>' : '')+
+      '</div>';
+    });
+    if(editMode) html += '<button class="edit-btn" data-addfolder="1">➕ nova pasta</button>';
+    html += '<div class="pixel" style="font-size:11px;margin:16px 0 8px;">sem pasta</div>';
+    const rootItems = getExplorerItems(null);
+    if(rootItems.length===0) html += '<p style="color:var(--text-dim);">nada por aqui.</p>';
+    html += renderExplorerItems(rootItems);
+    return html;
+  }
+  const items = getExplorerItems(currentFolderId);
+  let html = '<button class="edit-btn" data-backtoexplorer="1">← todas as pastas</button>'+
+    '<div class="breadcrumb">📁 '+escapeHTML(folderName(currentFolderId)||'?')+'</div>';
+  if(items.length===0) html += '<p style="color:var(--text-dim);">pasta vazia.</p>';
+  html += renderExplorerItems(items);
+  return html;
+}
+function getExplorerItems(folderId){
+  const items = [];
+  siteData.posts.forEach(function(p,i){ if((p.folderId||null)===folderId) items.push({type:'post', idx:i, title:p.title, date:p.date, icon:'📄'}); });
+  siteData.notes.forEach(function(n,i){ if((n.folderId||null)===folderId) items.push({type:'note', idx:i, title:n.title, date:n.date, icon:n.image?'🖼️':'🗒️'}); });
+  return items;
+}
+function renderExplorerItems(items){
+  let html = '';
+  items.forEach(function(it){
+    html += '<div class="list-item" style="display:flex;align-items:center;gap:8px;">'+
+      '<div style="flex:1;cursor:pointer;" data-openitem="'+it.type+'|'+it.idx+'">'+it.icon+' '+escapeHTML(it.title)+
+        '<div style="font-size:12px;color:var(--text-dim);">'+escapeHTML(it.date)+'</div></div>'+
+      (editMode? '<button class="edit-btn" data-moveitem="'+it.type+'|'+it.idx+'" style="margin:0;">📂 mover</button>' : '')+
+    '</div>';
+  });
+  return html;
+}
+function openExplorerItem(type, idx){
+  if(type==='post'){ currentPostIndex = idx; }
+  else{ currentNoteIndex = idx; }
+  explorerOpenType = type;
+  refreshWindowContent('projetos');
+}
+let explorerOpenType = null;
+function addFolder(){
+  const name = prompt('Nome da nova pasta:', 'Nova pasta');
+  if(name && name.trim()){
+    siteData.folders.push({ id: genId(), name: name.trim() });
+    saveState(); refreshWindowContent('projetos');
+  }
+}
+function delFolder(id){
+  if(!confirm('Apagar essa pasta? os itens dentro voltam pra "sem pasta".')) return;
+  siteData.posts.forEach(function(p){ if(p.folderId===id) p.folderId=null; });
+  siteData.notes.forEach(function(n){ if(n.folderId===id) n.folderId=null; });
+  siteData.folders = siteData.folders.filter(function(f){ return f.id!==id; });
+  saveState(); refreshWindowContent('projetos');
+}
+function moveItemToFolder(type, idx){
+  const names = siteData.folders.map(function(f){ return f.name; });
+  const choice = prompt('Mover pra qual pasta? (deixe em branco pra "sem pasta")\nOpcoes: '+names.join(', ')+'\nOu digite um nome novo pra criar a pasta.', names[0]||'');
+  if(choice===null) return;
+  let folderId = null;
+  const trimmed = choice.trim();
+  if(trimmed){
+    let f = siteData.folders.filter(function(x){ return x.name.toLowerCase()===trimmed.toLowerCase(); })[0];
+    if(!f){ f = { id: genId(), name: trimmed }; siteData.folders.push(f); }
+    folderId = f.id;
+  }
+  const arr = type==='post' ? siteData.posts : siteData.notes;
+  arr[idx].folderId = folderId;
+  saveState(); refreshWindowContent('projetos');
+}
+
+/* ---------- recados.exe : recadinhos (do Bloco de Notas) + livro de visitas ---------- */
+function renderRecados(){
+  let html = '<div class="pixel" style="font-size:11px;margin-bottom:10px;">meus recados</div>';
+  const myNotes = siteData.notes.slice().map(function(n,i){ return {n:n, i:i}; }).reverse();
+  if(myNotes.length===0) html += '<p style="color:var(--text-dim);">nenhum recado escrito ainda — usa o Bloco de Notas pra escrever um.</p>';
+  myNotes.forEach(function(o){
+    const n = o.n, i = o.i;
+    html += '<div class="gb-entry">'+
+      (n.image? '<img src="'+n.image+'" style="max-width:100%;border-radius:3px;margin-bottom:6px;display:block;">' : '')+
+      '<div class="pixel" style="font-size:11px;margin-bottom:4px;">'+escapeHTML(n.title||'sem titulo')+'</div>'+
+      '<div style="white-space:pre-wrap;">'+escapeHTML(n.content)+'</div>'+
+      '<div class="gb-meta">'+escapeHTML(n.date)+' '+
+      (editMode? '<button class="edit-btn danger" data-trashnote="'+i+'">🗑️</button>' : '')+
+      '</div>'+
+    '</div>';
+  });
+  html += '<div class="pixel" style="font-size:11px;margin:16px 0 10px;">livro de visitas</div>'+
+    '<div class="gb-form">'+
+      '<input type="text" id="gb-name" placeholder="seu nome" maxlength="30">'+
+      '<textarea id="gb-msg" rows="3" placeholder="deixe um recado..." maxlength="300"></textarea>'+
+      '<button class="win-btn" data-gbsubmit="1">enviar</button>'+
+    '</div>'+
+    '<div style="font-size:13px;color:var(--text-dim);margin:10px 0;">'+
+      '* recados de visitantes ficam salvos so neste navegador (site estatico, sem servidor).'+
+    '</div>';
+  for(let i=siteData.guestbook.length-1;i>=0;i--){
+    const g = siteData.guestbook[i];
+    html += '<div class="gb-entry">'+
+      '<div>'+escapeHTML(g.msg)+'</div>'+
+      '<div class="gb-meta">— '+escapeHTML(g.name)+' · '+escapeHTML(g.date)+' '+
+      (editMode? '<button class="edit-btn danger" data-removeitem="guestbook|'+i+'">🗑️</button>' : '')+
+      '</div>'+
+    '</div>';
+  }
+  return html;
+}
+function submitGuestbook(){
+  const nameEl = document.getElementById('gb-name');
+  const msgEl = document.getElementById('gb-msg');
+  const name = (nameEl.value||'Visitante').trim().slice(0,30) || 'Visitante';
+  const msg = (msgEl.value||'').trim().slice(0,300);
+  if(!msg) return;
+  siteData.guestbook.push({ name:name, msg:msg, date: todayStr() });
+  saveState();
+  refreshWindowContent('recados');
+}
+
+function renderLixeira(){
+  let html = '<div class="pixel" style="font-size:11px;margin-bottom:10px;">lixeira</div>';
+  if(siteData.trash.length===0){
+    html += '<p style="color:var(--text-dim);">vazia — posts do blog e recados apagados caem aqui antes de sumir de vez.</p>';
+    return html;
+  }
+  siteData.trash.forEach(function(t){
+    const title = t.data.title || '(sem titulo)';
+    const icon = t.type==='post' ? '📄' : (t.data.image? '🖼️' : '🗒️');
+    html += '<div class="list-item">'+
+      '<div>'+icon+' '+escapeHTML(title)+'</div>'+
+      '<div style="font-size:12px;color:var(--text-dim);">apagado em '+escapeHTML(t.deletedAt)+'</div>'+
+      '<div class="row-actions">'+
+        '<button class="edit-btn" data-restoretrash="'+t.id+'">♻️ restaurar</button>'+
+        '<button class="edit-btn danger" data-purgetrash="'+t.id+'">❌ excluir pra sempre</button>'+
+      '</div>'+
+    '</div>';
+  });
+  html += '<button class="edit-btn danger" data-emptytrash="1">🗑️ esvaziar lixeira</button>';
+  return html;
+}
+
+/* ---------- bloco_de_notas.exe : escreve recados com imagem ---------- */
+function renderBloco(){
+  const folderOptions = siteData.folders.map(function(f){ return '<option value="'+escapeHTML(f.id)+'">'+escapeHTML(f.name)+'</option>'; }).join('');
+  return (
+    '<div class="pixel" style="font-size:11px;margin-bottom:10px;">bloco de notas</div>'+
+    '<div class="login-field"><label>titulo</label><input type="text" id="note-title" maxlength="60" placeholder="titulo do recado"></div>'+
+    '<div class="login-field"><label>texto</label><textarea id="note-content" rows="5" placeholder="escreva aqui..." style="width:100%;background:#fff;color:var(--text);border:1px solid #7f9db6;font-family:Tahoma,Verdana,sans-serif;font-size:14px;padding:6px;"></textarea></div>'+
+    '<div class="login-field"><label>pasta (opcional, aparece nos Projetos)</label>'+
+      '<select id="note-folder" style="width:100%;padding:6px;font-family:Tahoma,Verdana,sans-serif;">'+
+        '<option value="">sem pasta</option>'+folderOptions+
+      '</select>'+
+    '</div>'+
+    '<div style="margin-bottom:8px;">'+
+      '<button class="edit-btn" data-note-addimg="1">📎 anexar imagem</button>'+
+      (noteDraftImage? '<button class="edit-btn danger" data-note-rmimg="1">remover imagem</button>' : '')+
+    '</div>'+
+    (noteDraftImage? '<img src="'+noteDraftImage+'" style="max-width:100%;border-radius:3px;margin-bottom:10px;display:block;">' : '')+
+    '<button class="win-btn" data-note-save="1">💾 salvar recado</button>'
+  );
+}
+let noteDraftImage = '';
+function saveNoteDraft(){
+  const title = (document.getElementById('note-title').value||'').trim().slice(0,60) || 'sem titulo';
+  const content = (document.getElementById('note-content').value||'').trim();
+  const folderId = document.getElementById('note-folder').value || null;
+  if(!content && !noteDraftImage){ alert('Escreve alguma coisa ou anexa uma imagem antes de salvar.'); return; }
+  siteData.notes.push({ id: genId(), title: title, content: content, image: noteDraftImage, date: todayStr(), folderId: folderId });
+  saveState();
+  noteDraftImage = '';
+  refreshWindowContent('bloco');
+  alert('Recado salvo! Da pra ver ele na aba Recados.');
+}
+
+/* ---------- calculadora.exe ---------- */
+let calcExpr = '';
+function renderCalc(){
+  const btns = ['C','⌫','%','÷', '7','8','9','×', '4','5','6','-', '1','2','3','+', '±','0','.','='];
+  let grid = '';
+  btns.forEach(function(b){
+    let cls = 'calc-btn';
+    if(['÷','×','-','+'].indexOf(b)!==-1) cls += ' op';
+    if(b==='=') cls += ' eq';
+    if(b==='C') cls += ' clr';
+    grid += '<button class="'+cls+'" data-calc="'+escapeHTML(b)+'">'+b+'</button>';
+  });
+  return (
+    '<div class="pixel" style="font-size:11px;margin-bottom:10px;">calculadora</div>'+
+    '<div class="calc-display" id="calc-display">'+escapeHTML(calcExpr||'0')+'</div>'+
+    '<div class="calc-grid">'+grid+'</div>'
+  );
+}
+function calcPress(b){
+  if(b==='C'){ calcExpr=''; }
+  else if(b==='⌫'){ calcExpr = calcExpr.slice(0,-1); }
+  else if(b==='±'){
+    const m = calcExpr.match(/(-?\d+\.?\d*)$/);
+    if(m){ const num = m[1]; const flipped = num.startsWith('-')? num.slice(1) : '-'+num; calcExpr = calcExpr.slice(0, m.index)+flipped; }
+  }
+  else if(b==='='){
+    try{
+      const safe = calcExpr.replace(/×/g,'*').replace(/÷/g,'/').replace(/%/g,'/100');
+      if(!/^[0-9+\-*/.() ]*$/.test(safe)) throw new Error('bad');
+      const result = Function('"use strict";return ('+safe+')')();
+      calcExpr = (result===undefined||isNaN(result)) ? 'erro' : String(Math.round(result*1e10)/1e10);
+    }catch(e){ calcExpr = 'erro'; }
+  }
+  else{
+    if(calcExpr==='erro') calcExpr='';
+    calcExpr += b;
+  }
+  const disp = document.getElementById('calc-display');
+  if(disp) disp.textContent = calcExpr||'0';
+}
+
+/* ---------- paint.exe : editor de desenho com camadas, inspirado no Ibis Paint X ---------- */
+let paintState = { tool:'brush', color:'#1c62e0', size:6, opacity:1, activeLayer:2, undo:[], redo:[], showLayer1:true, drawing:false, lastX:0, lastY:0, startX:0, startY:0, snapshotBeforeStroke:null };
+const PAINT_SWATCHES = ['#101010','#ffffff','#e2402c','#ff9d2e','#ffe066','#4aab3d','#1c62e0','#7b3fe4','#ff6fb0','#8a6240'];
+function renderPaint(){
+  const swatches = PAINT_SWATCHES.map(function(c){
+    return '<div class="paint-swatch'+(paintState.color===c?' active':'')+'" style="background:'+c+';" data-paintcolor="'+c+'"></div>';
+  }).join('');
+  return (
+    '<div class="pixel" style="font-size:11px;margin-bottom:8px;">paint</div>'+
+    '<div class="paint-toolbar">'+
+      '<div class="paint-tool'+(paintState.tool==='brush'?' active':'')+'" data-painttool="brush" title="pincel">✏️</div>'+
+      '<div class="paint-tool'+(paintState.tool==='eraser'?' active':'')+'" data-painttool="eraser" title="borracha">🧽</div>'+
+      '<div class="paint-tool'+(paintState.tool==='line'?' active':'')+'" data-painttool="line" title="linha">📏</div>'+
+      '<div class="paint-tool'+(paintState.tool==='rect'?' active':'')+'" data-painttool="rect" title="retangulo">▭</div>'+
+      '<div class="paint-tool'+(paintState.tool==='circle'?' active':'')+'" data-painttool="circle" title="circulo">⭕</div>'+
+      '<div class="paint-tool'+(paintState.tool==='fill'?' active':'')+'" data-painttool="fill" title="balde">🪣</div>'+
+      '<div class="paint-tool" data-paintundo="1" title="desfazer">↩️</div>'+
+      '<div class="paint-tool" data-paintredo="1" title="refazer">↪️</div>'+
+      '<div class="paint-tool" data-paintclear="1" title="limpar camada">🧹</div>'+
+      '<div class="paint-tool" data-paintsave="1" title="baixar PNG">💾</div>'+
+    '</div>'+
+    '<div class="paint-row">🎨 '+swatches+' <input type="color" id="paint-custom" value="'+paintState.color+'"></div>'+
+    '<div class="paint-row">tamanho <input type="range" id="paint-size" min="1" max="50" value="'+paintState.size+'"><span id="paint-sizeval">'+paintState.size+'</span></div>'+
+    '<div class="paint-row">opacidade <input type="range" id="paint-opacity" min="10" max="100" value="'+Math.round(paintState.opacity*100)+'"><span id="paint-opval">'+Math.round(paintState.opacity*100)+'%</span></div>'+
+    '<div class="paint-row">'+
+      '<label><input type="checkbox" id="paint-layer1-vis" '+(paintState.showLayer1?'checked':'')+'> camada fundo visivel</label>'+
+      '<select id="paint-active-layer" style="margin-left:auto;">'+
+        '<option value="1"'+(paintState.activeLayer===1?' selected':'')+'>desenhando: fundo</option>'+
+        '<option value="2"'+(paintState.activeLayer===2?' selected':'')+'>desenhando: camada 2</option>'+
+      '</select>'+
+    '</div>'+
+    '<div class="paint-canvas-wrap" style="width:100%;height:260px;">'+
+      '<canvas id="paint-l1" width="600" height="260"></canvas>'+
+      '<canvas id="paint-l2" width="600" height="260"></canvas>'+
+    '</div>'
+  );
+}
+let paintCtx1, paintCtx2, paintCanvasEls;
+function activeCtx(){ return paintState.activeLayer===1 ? paintCtx1 : paintCtx2; }
+function activeCanvas(){ return paintState.activeLayer===1 ? paintCanvasEls[0] : paintCanvasEls[1]; }
+function initPaint(){
+  const c1 = document.getElementById('paint-l1'), c2 = document.getElementById('paint-l2');
+  if(!c1||!c2) return;
+  paintCanvasEls = [c1,c2];
+  paintCtx1 = c1.getContext('2d');
+  paintCtx2 = c2.getContext('2d');
+  paintCtx1.fillStyle = '#ffffff';
+  paintCtx1.fillRect(0,0,c1.width,c1.height);
+  c2.style.display = paintState.showLayer1 ? '' : 'none';
+  c1.style.display = paintState.showLayer1 ? '' : 'none';
+
+  function getPos(e){
+    const rect = activeCanvas().getBoundingClientRect();
+    const scaleX = activeCanvas().width/rect.width, scaleY = activeCanvas().height/rect.height;
+    return { x: (e.clientX-rect.left)*scaleX, y: (e.clientY-rect.top)*scaleY };
+  }
+  function snapshot(){ return activeCtx().getImageData(0,0,activeCanvas().width,activeCanvas().height); }
+  function pushUndo(){ paintState.undo.push({layer:paintState.activeLayer, img:snapshot()}); if(paintState.undo.length>25) paintState.undo.shift(); paintState.redo=[]; }
+  function pointerDown(e){
+    e.preventDefault();
+    paintState.drawing = true;
+    pushUndo();
+    const p = getPos(e);
+    paintState.lastX=p.x; paintState.lastY=p.y; paintState.startX=p.x; paintState.startY=p.y;
+    paintState.snapshotBeforeStroke = snapshot();
+    const ctx = activeCtx();
+    ctx.globalAlpha = paintState.opacity;
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    if(paintState.tool==='fill'){ floodFill(ctx, Math.round(p.x), Math.round(p.y), paintState.color); paintState.drawing=false; }
+    else if(paintState.tool==='brush' || paintState.tool==='eraser'){
+      ctx.strokeStyle = paintState.tool==='eraser' ? '#ffffff' : paintState.color;
+      ctx.globalCompositeOperation = paintState.tool==='eraser' && paintState.activeLayer===2 ? 'destination-out' : 'source-over';
+      ctx.lineWidth = paintState.size;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+0.01,p.y+0.01); ctx.stroke();
+    }
+  }
+  function pointerMove(e){
+    if(!paintState.drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    const ctx = activeCtx();
+    if(paintState.tool==='brush' || paintState.tool==='eraser'){
+      ctx.beginPath(); ctx.moveTo(paintState.lastX,paintState.lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+      paintState.lastX=p.x; paintState.lastY=p.y;
+    }else if(paintState.tool==='line' || paintState.tool==='rect' || paintState.tool==='circle'){
+      ctx.putImageData(paintState.snapshotBeforeStroke,0,0);
+      ctx.globalCompositeOperation='source-over';
+      ctx.strokeStyle = paintState.color; ctx.lineWidth = paintState.size;
+      ctx.beginPath();
+      if(paintState.tool==='line'){ ctx.moveTo(paintState.startX,paintState.startY); ctx.lineTo(p.x,p.y); }
+      else if(paintState.tool==='rect'){ ctx.rect(Math.min(paintState.startX,p.x), Math.min(paintState.startY,p.y), Math.abs(p.x-paintState.startX), Math.abs(p.y-paintState.startY)); }
+      else{ const r = Math.hypot(p.x-paintState.startX, p.y-paintState.startY); ctx.arc(paintState.startX,paintState.startY,r,0,Math.PI*2); }
+      ctx.stroke();
+    }
+  }
+  function pointerUp(){ paintState.drawing=false; }
+  [c1,c2].forEach(function(c){
+    c.addEventListener('pointerdown', pointerDown);
+    c.addEventListener('pointermove', pointerMove);
+    c.addEventListener('pointerup', pointerUp);
+    c.addEventListener('pointerleave', pointerUp);
+  });
+}
+function floodFill(ctx, x, y, colorHex){
+  const w = ctx.canvas.width, h = ctx.canvas.height;
+  if(x<0||y<0||x>=w||y>=h) return;
+  const img = ctx.getImageData(0,0,w,h);
+  const data = img.data;
+  const idx = (y*w+x)*4;
+  const target = [data[idx],data[idx+1],data[idx+2],data[idx+3]];
+  const rc = parseInt(colorHex.slice(1,3),16), gc = parseInt(colorHex.slice(3,5),16), bc = parseInt(colorHex.slice(5,7),16);
+  if(target[0]===rc && target[1]===gc && target[2]===bc) return;
+  const stack = [[x,y]];
+  let guard = 0;
+  while(stack.length && guard<400000){
+    guard++;
+    const [cx,cy] = stack.pop();
+    if(cx<0||cy<0||cx>=w||cy>=h) continue;
+    const i = (cy*w+cx)*4;
+    if(data[i]!==target[0]||data[i+1]!==target[1]||data[i+2]!==target[2]||data[i+3]!==target[3]) continue;
+    data[i]=rc; data[i+1]=gc; data[i+2]=bc; data[i+3]=255;
+    stack.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+  }
+  ctx.putImageData(img,0,0);
+}
+function paintUndo(){
+  const last = paintState.undo.pop();
+  if(!last) return;
+  paintState.redo.push({layer:last.layer, img: (last.layer===1?paintCtx1:paintCtx2).getImageData(0,0,paintCanvasEls[0].width,paintCanvasEls[0].height)});
+  (last.layer===1?paintCtx1:paintCtx2).putImageData(last.img,0,0);
+}
+function paintRedo(){
+  const last = paintState.redo.pop();
+  if(!last) return;
+  paintState.undo.push({layer:last.layer, img: (last.layer===1?paintCtx1:paintCtx2).getImageData(0,0,paintCanvasEls[0].width,paintCanvasEls[0].height)});
+  (last.layer===1?paintCtx1:paintCtx2).putImageData(last.img,0,0);
+}
+function paintClear(){
+  if(!confirm('Limpar a camada ativa?')) return;
+  const ctx = activeCtx();
+  if(paintState.activeLayer===1){ ctx.globalCompositeOperation='source-over'; ctx.fillStyle='#fff'; ctx.fillRect(0,0,paintCanvasEls[0].width,paintCanvasEls[0].height); }
+  else{ ctx.clearRect(0,0,paintCanvasEls[1].width,paintCanvasEls[1].height); }
+}
+function paintDownload(){
+  const out = document.createElement('canvas');
+  out.width = paintCanvasEls[0].width; out.height = paintCanvasEls[0].height;
+  const octx = out.getContext('2d');
+  if(paintState.showLayer1) octx.drawImage(paintCanvasEls[0],0,0);
+  else{ octx.fillStyle='#fff'; octx.fillRect(0,0,out.width,out.height); }
+  octx.drawImage(paintCanvasEls[1],0,0);
+  const a = document.createElement('a');
+  a.href = out.toDataURL('image/png');
+  a.download = 'desenho.png';
+  a.click();
+}
+
+/* ---------- prompt_de_comando.exe : terminal com varios comandos ---------- */
+let termHistory = [];
+function renderPrompt(){
+  const lines = termHistory.map(function(l){ return escapeHTML(l); }).join('\n');
+  return (
+    '<div class="pixel" style="font-size:11px;margin-bottom:8px;">prompt de comando</div>'+
+    '<div class="term-screen" id="term-screen">'+(lines||'RaulXP Terminal [v2.0]\ndigite "ajuda" pra ver os comandos')+'</div>'+
+    '<div class="term-inputrow"><span>&gt;</span><input type="text" id="term-input" autocomplete="off" placeholder="digite um comando..."></div>'
+  );
+}
+function initPrompt(){
+  const input = document.getElementById('term-input');
+  if(!input) return;
+  input.focus();
+  const screen = document.getElementById('term-screen');
+  if(screen) screen.scrollTop = screen.scrollHeight;
+}
+function termPrint(txt){
+  termHistory.push(txt);
+  const screen = document.getElementById('term-screen');
+  if(screen){ screen.textContent = termHistory.join('\n'); screen.scrollTop = screen.scrollHeight; }
+}
+const TERM_COMMANDS = {
+  ajuda: function(){ return 'comandos: ajuda, limpar, sobre, quemsou, data, hora, versao, creditos, abrir <app>, fechar <app>, listar, recados, projetos, blog, tema, cor <hex>, beep, reiniciar, desligar, matrix, sorte, eco <texto>'; },
+  limpar: function(){ termHistory=[]; const screen=document.getElementById('term-screen'); if(screen) screen.textContent=''; return null; },
+  sobre: function(){ return siteData.profile.name+' — '+siteData.profile.tagline; },
+  quemsou: function(){ return 'usuario atual: '+(currentProfile? currentProfile.name : '?'); },
+  data: function(){ return new Date().toLocaleDateString('pt-BR'); },
+  hora: function(){ return new Date().toLocaleTimeString('pt-BR'); },
+  versao: function(){ return 'RaulXP v2.0'; },
+  creditos: function(){ return 'feito por '+siteData.profile.name+' com muito café instantâneo.'; },
+  listar: function(){ return getOrderedApps().map(function(a){ return a.id; }).join(', '); },
+  recados: function(){ openWindow('recados'); return 'abrindo recados...'; },
+  projetos: function(){ openWindow('projetos'); return 'abrindo projetos...'; },
+  blog: function(){ openWindow('blog'); return 'abrindo blog...'; },
+  tema: function(){ toggleCrt(); return 'filtro CRT: '+(crtOn?'ligado':'desligado'); },
+  beep: function(){ playBeep(); return 'beep!'; },
+  reiniciar: function(){ setTimeout(function(){ location.reload(); }, 400); return 'reiniciando...'; },
+  desligar: function(){ setTimeout(doShutdown, 400); return 'desligando...'; },
+  matrix: function(){ document.body.classList.toggle('crt-on'); crtOn = document.body.classList.contains('crt-on'); return 'modo visual alternado.'; },
+  sorte: function(){
+    const frases = ['boas ideias chegam de repente — deixa o bloco de notas por perto.','todo bug vira feature se voce documentar direito.','hoje e um bom dia pra apagar aquele rascunho da lixeira.','sorte grande: voce achou o terminal escondido.'];
+    return frases[Math.floor(Math.random()*frases.length)];
+  }
+};
+function runTermCommand(raw){
+  const val = (raw||'').trim();
+  if(!val) return;
+  termPrint('> '+val);
+  const parts = val.split(' ');
+  const cmd = parts[0].toLowerCase();
+  const arg = parts.slice(1).join(' ');
+  if(cmd==='abrir'){
+    const id = arg.trim();
+    if(APPS.filter(function(a){return a.id===id;}).length){ openWindow(id); termPrint('abrindo '+id+'...'); }
+    else termPrint('app "'+id+'" nao encontrado. digite "listar" pra ver os ids.');
+    return;
+  }
+  if(cmd==='fechar'){
+    const id = arg.trim();
+    if(openWindows[id]){ closeWindow(id); termPrint('fechado.'); } else termPrint('essa janela nao ta aberta.');
+    return;
+  }
+  if(cmd==='cor'){
+    const hex = arg.trim();
+    if(/^#?[0-9a-f]{6}$/i.test(hex)){
+      const val2 = hex.startsWith('#')?hex:'#'+hex;
+      document.documentElement.style.setProperty('--accent1', val2);
+      document.documentElement.style.setProperty('--accent2', val2);
+      termPrint('cor das janelas mudada pra '+val2+'.');
+    }else termPrint('cor invalida — use formato #rrggbb.');
+    return;
+  }
+  if(cmd==='eco'){ termPrint(arg||''); return; }
+  if(TERM_COMMANDS[cmd]){
+    const out = TERM_COMMANDS[cmd]();
+    if(out) termPrint(out);
+    return;
+  }
+  termPrint('comando nao reconhecido: "'+cmd+'". digite "ajuda".');
+}
+
+/* ---------- configuracoes.exe : perfil, papel de parede, apps e usuarios ---------- */
+function renderConfig(){
+  const p = siteData.profile;
+  const avatarInner = p.photo ? '<img src="'+p.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : escapeHTML((p.name||'?').charAt(0).toUpperCase());
+  let appRows = '';
+  getOrderedApps().forEach(function(a,i){
+    appRows += '<div class="cfg-row"><div class="cfg-label">'+a.glyph+' '+escapeHTML(getAppLabel(a))+'</div>'+
+      '<div class="cfg-btnrow">'+
+        '<button class="edit-btn" style="margin:0;" data-apprename="'+a.id+'">✏️</button>'+
+        '<button class="edit-btn" style="margin:0;" data-appup="'+a.id+'" '+(i===0?'disabled':'')+'>⬆️</button>'+
+        '<button class="edit-btn" style="margin:0;" data-appdown="'+a.id+'" '+(i===getOrderedApps().length-1?'disabled':'')+'>⬇️</button>'+
+      '</div></div>';
+  });
+  let userRows = '';
+  profiles.forEach(function(u){
+    userRows += '<div class="cfg-row"><div class="cfg-label">👤 '+escapeHTML(u.name)+' ('+escapeHTML(u.email)+')'+(currentProfile&&u.id===currentProfile.id?' — atual':'')+'</div>'+
+      (profiles.length>1? '<button class="edit-btn danger" style="margin:0;" data-deluser="'+u.id+'">🗑️</button>' : '')+
+    '</div>';
+  });
+  return (
+    '<div class="pixel" style="font-size:11px;margin-bottom:10px;">configurações</div>'+
+    '<div class="cfg-section">'+
+      '<h4>perfil</h4>'+
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">'+
+        '<div class="avatar" style="margin:0;">'+avatarInner+'</div>'+
+        '<div><button class="edit-btn" data-changephoto="1">🖼️ trocar foto</button>'+(p.photo?'<button class="edit-btn danger" data-clearphoto="1">remover</button>':'')+'</div>'+
+      '</div>'+
+      '<div class="cfg-row"><div class="cfg-label">nome, bio e links</div><button class="edit-btn" style="margin:0;" data-open="sobre">abrir Sobre mim</button></div>'+
+    '</div>'+
+    '<div class="cfg-section">'+
+      '<h4>papel de parede</h4>'+
+      '<div class="cfg-row"><div class="cfg-label">imagem de fundo do desktop</div>'+
+        '<div class="cfg-btnrow"><button class="edit-btn" style="margin:0;" data-changewallpaper="1">🖼️ trocar</button>'+
+        (p.wallpaper?'<button class="edit-btn danger" style="margin:0;" data-clearwallpaper="1">padrao</button>':'')+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cfg-section">'+
+      '<h4>aplicativos (ordem e nomes)</h4>'+appRows+
+    '</div>'+
+    '<div class="cfg-section">'+
+      '<h4>usuarios deste navegador</h4>'+userRows+
+      '<div class="row-actions">'+
+        '<button class="edit-btn" data-adduser="1">➕ criar usuario</button>'+
+        '<button class="edit-btn" data-changepass="1">🔑 trocar minha senha</button>'+
+        '<button class="edit-btn danger" id="sm-switchuser2" data-switchuser="1">👤 trocar de usuario</button>'+
+      '</div>'+
+      '<p class="login-note" style="margin-top:8px;">obs: como esse site nao tem servidor, a senha fica salva sem criptografia so neste navegador — e uma forma de separar quem esta usando o PC, nao um sistema de conta seguro de verdade.</p>'+
+    '</div>'
+  );
+}
+function renderApoie(){
+  return (
+    '<div class="pixel" style="font-size:11px;margin-bottom:10px;text-align:center;">apoie</div>'+
+    '<p style="text-align:center;">me compra um cafe? hehe</p>'+
+    '<div class="qr-wrap"><canvas id="qr-canvas" width="102" height="102"></canvas></div>'+
+    '<p style="text-align:center;font-size:14px;color:var(--text-dim);">🔧 QR ilustrativo — troque pela sua chave Pix / link de doacao real.</p>'
+  );
+}
+function drawFinder(ctx,ox,oy,cell){
+  ctx.fillStyle='#000'; ctx.fillRect(ox,oy,7*cell,7*cell);
+  ctx.fillStyle='#fff'; ctx.fillRect(ox+cell,oy+cell,5*cell,5*cell);
+  ctx.fillStyle='#000'; ctx.fillRect(ox+2*cell,oy+2*cell,3*cell,3*cell);
+}
+function drawFakeQR(){
+  const canvas = document.getElementById('qr-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = 17;
+  const cell = canvas.width/size;
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#000';
+  for(let y=0;y<size;y++){
+    for(let x=0;x<size;x++){
+      const inCorner = (x<5&&y<5)||(x>size-6&&y<5)||(x<5&&y>size-6);
+      if(inCorner) continue;
+      if(((x*928371+y*1237)%7)<3){ ctx.fillRect(x*cell,y*cell,cell,cell); }
+    }
+  }
+  drawFinder(ctx,0,0,cell);
+  drawFinder(ctx,(size-7)*cell,0,cell);
+  drawFinder(ctx,0,(size-7)*cell,cell);
+}
+
+/* ============================================================
+   AREA DE TRABALHO / MENU INICIAR
+============================================================ */
+function renderDesktopIcons(){
+  const wrap = document.getElementById('desktop-icons');
+  wrap.innerHTML = getOrderedApps().map(function(a){
+    return '<div class="icon" data-icon="'+a.id+'"><div class="glyph">'+a.glyph+'</div><div class="label">'+escapeHTML(getAppLabel(a))+'</div></div>';
+  }).join('');
+  wrap.querySelectorAll('.icon').forEach(function(iconEl){
+    iconEl.addEventListener('click', function(){
+      wrap.querySelectorAll('.icon').forEach(function(i){ i.classList.remove('selected'); });
+      iconEl.classList.add('selected');
+      if(isTouchDevice) openWindow(iconEl.dataset.icon);
+    });
+    iconEl.addEventListener('dblclick', function(){ openWindow(iconEl.dataset.icon); });
+  });
+}
+function renderStartMenu(){
+  const menu = document.getElementById('start-menu');
+  const rightIds = { config:1, lixeira:1, apoie:1 };
+  const ordered = getOrderedApps();
+  const leftApps = ordered.filter(function(a){ return !rightIds[a.id]; });
+  const rightApps = ordered.filter(function(a){ return rightIds[a.id]; });
+  const left = leftApps.map(function(a){
+    return '<div class="sm-item" data-open="'+a.id+'"><span class="sm-icon">'+a.glyph+'</span>'+escapeHTML(getAppLabel(a))+'</div>';
+  }).join('');
+  let right = rightApps.map(function(a){
+    return '<div class="sm-item" data-open="'+a.id+'"><span class="sm-icon">'+a.glyph+'</span>'+escapeHTML(getAppLabel(a))+'</div>';
+  }).join('');
+  right += '<div class="sm-sep"></div>';
+  right += '<div class="sm-item" id="sm-editmode"><span class="sm-icon">🛠️</span>Modo Edicao: '+(editMode?'ON':'OFF')+'</div>';
+  right += '<div class="sm-item" id="sm-crt"><span class="sm-icon">📺</span>Filtro CRT: '+(crtOn?'ON':'OFF')+'</div>';
+  right += '<div class="sm-item" id="sm-export"><span class="sm-icon">💾</span>Exportar dados</div>';
+  right += '<div class="sm-item" id="sm-import"><span class="sm-icon">📂</span>Importar dados</div>';
+  right += '<div class="sm-item" id="sm-reset"><span class="sm-icon">♻️</span>Restaurar padrao</div>';
+  right += '<div class="sm-sep"></div>';
+  right += '<div class="sm-item" id="sm-switchuser"><span class="sm-icon">👤</span>Trocar de usuario</div>';
+  const initial = escapeHTML((siteData.profile.name||'R').trim().charAt(0).toUpperCase() || 'R');
+  const avatarInner = siteData.profile.photo ? '<img src="'+siteData.profile.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">' : initial;
+  menu.innerHTML =
+    '<div class="sm-header"><span class="sm-avatar">'+avatarInner+'</span>'+escapeHTML(siteData.profile.name||'RaulXP')+'</div>'+
+    '<div class="sm-columns">'+
+      '<div class="sm-col sm-left">'+left+'</div>'+
+      '<div class="sm-col sm-right">'+right+'</div>'+
+    '</div>'+
+    '<div class="sm-footer"><div class="sm-shutdown-btn" id="sm-shutdown">⏻ Desligar</div></div>';
+}
+function toggleStartMenu(force){
+  const menu = document.getElementById('start-menu');
+  const show = (force!==undefined) ? force : menu.classList.contains('hidden');
+  menu.classList.toggle('hidden', !show);
+}
+function toggleEditMode(){
+  editMode = !editMode;
+  document.getElementById('edit-indicator').classList.toggle('hidden', !editMode);
+  renderStartMenu();
+  Object.keys(openWindows).forEach(refreshWindowContent);
+}
+function applyCrtState(){
+  document.body.classList.toggle('crt-on', crtOn);
+}
+function toggleCrt(){
+  crtOn = !crtOn;
+  try{ localStorage.setItem(CRT_KEY, crtOn ? 'on' : 'off'); }catch(e){}
+  applyCrtState();
+  renderStartMenu();
+}
+function doShutdown(){
+  const screen = document.getElementById('shutdown-screen');
+  const msg = document.getElementById('shutdown-msg');
+  screen.classList.remove('hidden');
+  msg.textContent = 'Encerrando o sistema...';
+  setTimeout(function(){
+    msg.innerHTML = 'ja pode fechar essa aba 👋<br><span style="font-size:9px;">(ou clica pra religar)</span>';
+    document.getElementById('restart-btn').classList.remove('hidden');
+  }, 1800);
+}
+function hideContextMenu(){ document.getElementById('context-menu').classList.add('hidden'); }
+function updateClock(){
+  const d = new Date();
+  document.getElementById('clock').textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+let audioCtx;
+function playBeep(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'square'; o.frequency.value = 520; g.gain.value = 0.03;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.12);
+    o.stop(audioCtx.currentTime+0.13);
+  }catch(e){}
+}
+
+/* ============================================================
+   EVENTOS (delegacao)
+============================================================ */
+document.getElementById('windows-layer').addEventListener('click', function(e){
+  let el;
+  if(el = e.target.closest('[data-min]')) minimizeWindow(el.dataset.min);
+  else if(el = e.target.closest('[data-max]')) toggleMaximize(el.dataset.max);
+  else if(el = e.target.closest('[data-close]')) closeWindow(el.dataset.close);
+  else if(el = e.target.closest('[data-open]')) openWindow(el.dataset.open);
+  else if(el = e.target.closest('[data-editurl]')){
+    const parts = el.dataset.editurl.split('|');
+    const arrName = parts[0], idx = parts[1];
+    const cur = siteData[arrName][idx].url || '';
+    const val = prompt('Cole o link (URL):', cur);
+    if(val!==null){ siteData[arrName][idx].url = val; saveState(); refreshWindowContent(ARR_TO_WIN[arrName]); }
+  }
+  else if(el = e.target.closest('[data-removeitem]')){
+    const parts = el.dataset.removeitem.split('|');
+    const arrName = parts[0], idx = Number(parts[1]);
+    if(arrName==='posts'){
+      if(confirm('Mandar esse post pra lixeira?')){
+        const removed = siteData.posts.splice(idx,1)[0];
+        siteData.trash.unshift({ id: genId(), type:'post', data: removed, deletedAt: todayStr() });
+        saveState();
+        currentPostIndex = null;
+        refreshWindowContent('blog');
+      }
+    }else if(confirm('Remover esse item?')){
+      siteData[arrName].splice(idx,1);
+      saveState();
+      refreshWindowContent(ARR_TO_WIN[arrName]);
+    }
+  }
+  else if(el = e.target.closest('[data-trashnote]')){
+    const idx = Number(el.dataset.trashnote);
+    if(confirm('Mandar esse recado pra lixeira?')){
+      const removed = siteData.notes.splice(idx,1)[0];
+      siteData.trash.unshift({ id: genId(), type:'note', data: removed, deletedAt: todayStr() });
+      saveState();
+      refreshWindowContent('recados');
+    }
+  }
+  else if(el = e.target.closest('[data-restoretrash]')){
+    const id = el.dataset.restoretrash;
+    const item = siteData.trash.filter(function(t){ return t.id===id; })[0];
+    if(item){
+      if(item.type==='post') siteData.posts.push(item.data);
+      else siteData.notes.push(item.data);
+      siteData.trash = siteData.trash.filter(function(t){ return t.id!==id; });
+      saveState(); refreshWindowContent('lixeira');
+    }
+  }
+  else if(el = e.target.closest('[data-purgetrash]')){
+    const id = el.dataset.purgetrash;
+    if(confirm('Excluir pra sempre? nao da pra desfazer.')){
+      siteData.trash = siteData.trash.filter(function(t){ return t.id!==id; });
+      saveState(); refreshWindowContent('lixeira');
+    }
+  }
+  else if(el = e.target.closest('[data-emptytrash]')){
+    if(confirm('Esvaziar a lixeira pra sempre?')){
+      siteData.trash = [];
+      saveState(); refreshWindowContent('lixeira');
+    }
+  }
+  else if(el = e.target.closest('[data-openfolder]')){ currentFolderId = el.dataset.openfolder; refreshWindowContent('projetos'); }
+  else if(el = e.target.closest('[data-backtoexplorer]')){ currentFolderId = null; refreshWindowContent('projetos'); }
+  else if(el = e.target.closest('[data-closeitem]')){ explorerOpenType=null; currentPostIndex=null; currentNoteIndex=null; refreshWindowContent('projetos'); }
+  else if(el = e.target.closest('[data-openitem]')){
+    const parts = el.dataset.openitem.split('|');
+    openExplorerItem(parts[0], Number(parts[1]));
+  }
+  else if(el = e.target.closest('[data-addfolder]')){ addFolder(); }
+  else if(el = e.target.closest('[data-delfolder]')){ delFolder(el.dataset.delfolder); }
+  else if(el = e.target.closest('[data-moveitem]')){
+    const parts = el.dataset.moveitem.split('|');
+    moveItemToFolder(parts[0], Number(parts[1]));
+  }
+  else if(el = e.target.closest('[data-addlink]')){
+    siteData.links.push({ label:'Novo link', url:'#' });
+    saveState(); refreshWindowContent('sobre');
+  }
+  else if(el = e.target.closest('[data-addpost]')){
+    siteData.posts.unshift({ title:'Novo post', date: todayStr(), content:'Escreva aqui...', folderId:null });
+    saveState(); refreshWindowContent('blog');
+  }
+  else if(el = e.target.closest('[data-viewpost]')){
+    currentPostIndex = parseInt(el.dataset.viewpost,10);
+    refreshWindowContent('blog');
+  }
+  else if(el = e.target.closest('[data-backtolist]')){
+    currentPostIndex = null;
+    refreshWindowContent('blog');
+  }
+  else if(el = e.target.closest('[data-gbsubmit]')){
+    submitGuestbook();
+  }
+  else if(el = e.target.closest('[data-navgo]')){
+    const input = document.getElementById('nav-url');
+    if(input) navigateBrowser(input.value);
+  }
+  else if(el = e.target.closest('[data-navback]')){
+    try{ document.getElementById('nav-frame').contentWindow.history.back(); }catch(err){}
+  }
+  else if(el = e.target.closest('[data-navfwd]')){
+    try{ document.getElementById('nav-frame').contentWindow.history.forward(); }catch(err){}
+  }
+  else if(el = e.target.closest('[data-calc]')){ calcPress(el.dataset.calc); }
+  else if(el = e.target.closest('[data-note-addimg]')){ document.getElementById('note-image-input').click(); }
+  else if(el = e.target.closest('[data-note-rmimg]')){ noteDraftImage=''; refreshWindowContent('bloco'); }
+  else if(el = e.target.closest('[data-note-save]')){ saveNoteDraft(); }
+  else if(el = e.target.closest('[data-painttool]')){ paintState.tool = el.dataset.painttool; refreshWindowContent('paint'); }
+  else if(el = e.target.closest('[data-paintcolor]')){ paintState.color = el.dataset.paintcolor; refreshWindowContent('paint'); }
+  else if(el = e.target.closest('[data-paintundo]')){ paintUndo(); }
+  else if(el = e.target.closest('[data-paintredo]')){ paintRedo(); }
+  else if(el = e.target.closest('[data-paintclear]')){ paintClear(); }
+  else if(el = e.target.closest('[data-paintsave]')){ paintDownload(); }
+  else if(el = e.target.closest('[data-changephoto]')){ document.getElementById('photo-file-input').click(); }
+  else if(el = e.target.closest('[data-clearphoto]')){ siteData.profile.photo=''; saveState(); refreshWindowContent('config'); renderStartMenu(); }
+  else if(el = e.target.closest('[data-changewallpaper]')){ document.getElementById('wallpaper-file-input').click(); }
+  else if(el = e.target.closest('[data-clearwallpaper]')){ siteData.profile.wallpaper=''; saveState(); applyWallpaper(); refreshWindowContent('config'); }
+  else if(el = e.target.closest('[data-apprename]')){ renameApp(el.dataset.apprename); }
+  else if(el = e.target.closest('[data-appup]')){ moveApp(el.dataset.appup, -1); }
+  else if(el = e.target.closest('[data-appdown]')){ moveApp(el.dataset.appdown, 1); }
+  else if(el = e.target.closest('[data-adduser]')){ closeWindow('config'); showLogin(true); }
+  else if(el = e.target.closest('[data-changepass]')){ changeMyPassword(); }
+  else if(el = e.target.closest('[data-deluser]')){ deleteUser(el.dataset.deluser); }
+  else if(el = e.target.closest('[data-switchuser]')){ logoutProfile(); }
+});
+document.getElementById('windows-layer').addEventListener('input', function(e){
+  const t = e.target;
+  if(t.id==='paint-size'){ paintState.size = Number(t.value); const s=document.getElementById('paint-sizeval'); if(s) s.textContent=t.value; }
+  else if(t.id==='paint-opacity'){ paintState.opacity = Number(t.value)/100; const s=document.getElementById('paint-opval'); if(s) s.textContent=t.value+'%'; }
+  else if(t.id==='paint-custom'){ paintState.color = t.value; }
+});
+document.getElementById('windows-layer').addEventListener('change', function(e){
+  const t = e.target;
+  if(t.id==='paint-layer1-vis'){
+    paintState.showLayer1 = t.checked;
+    if(paintCanvasEls) paintCanvasEls[0].style.display = paintState.showLayer1 ? '' : 'none';
+  }
+  else if(t.id==='paint-active-layer'){ paintState.activeLayer = Number(t.value); }
+  else if(t.id==='photo-file-input' || t.id==='wallpaper-file-input' || t.id==='note-image-input'){ /* handled below */ }
+});
+document.getElementById('photo-file-input').addEventListener('change', function(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){ siteData.profile.photo = ev.target.result; saveState(); refreshWindowContent('config'); refreshWindowContent('sobre'); renderStartMenu(); };
+  reader.readAsDataURL(file);
+  e.target.value='';
+});
+document.getElementById('wallpaper-file-input').addEventListener('change', function(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){ siteData.profile.wallpaper = ev.target.result; saveState(); applyWallpaper(); refreshWindowContent('config'); };
+  reader.readAsDataURL(file);
+  e.target.value='';
+});
+document.getElementById('note-image-input').addEventListener('change', function(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){ noteDraftImage = ev.target.result; refreshWindowContent('bloco'); };
+  reader.readAsDataURL(file);
+  e.target.value='';
+});
+document.getElementById('windows-layer').addEventListener('keydown', function(e){
+  if(e.key==='Enter' && e.target.id==='term-input'){
+    e.preventDefault();
+    runTermCommand(e.target.value);
+    e.target.value='';
+  }
+});
+document.getElementById('windows-layer').addEventListener('keydown', function(e){
+  if(e.key==='Enter' && e.target.id==='nav-url'){
+    e.preventDefault();
+    navigateBrowser(e.target.value);
+  }
+});
+
+document.getElementById('start-menu').addEventListener('click', function(e){
+  const openEl = e.target.closest('[data-open]');
+  if(openEl){ openWindow(openEl.dataset.open); toggleStartMenu(false); return; }
+  if(e.target.closest('#sm-editmode')){ toggleEditMode(); toggleStartMenu(false); return; }
+  if(e.target.closest('#sm-crt')){ toggleCrt(); toggleStartMenu(false); return; }
+  if(e.target.closest('#sm-export')){ exportState(); toggleStartMenu(false); return; }
+  if(e.target.closest('#sm-import')){ document.getElementById('import-file-input').click(); toggleStartMenu(false); return; }
+  if(e.target.closest('#sm-reset')){ resetState(); toggleStartMenu(false); return; }
+  if(e.target.closest('#sm-switchuser')){ toggleStartMenu(false); logoutProfile(); return; }
+  if(e.target.closest('#sm-shutdown')){ doShutdown(); toggleStartMenu(false); return; }
+});
+document.getElementById('start-btn').addEventListener('click', function(e){ e.stopPropagation(); toggleStartMenu(); });
+document.addEventListener('click', function(e){
+  const menu = document.getElementById('start-menu');
+  if(!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target.id!=='start-btn' && !e.target.closest('#start-btn')){
+    toggleStartMenu(false);
+  }
+  if(!e.target.closest('#context-menu')) hideContextMenu();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ toggleStartMenu(false); hideContextMenu(); }
+});
+document.getElementById('import-file-input').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(file) importState(file);
+  e.target.value = '';
+});
+document.getElementById('restart-btn').addEventListener('click', function(){ location.reload(); });
+document.getElementById('desktop').addEventListener('contextmenu', function(e){
+  e.preventDefault();
+  const menu = document.getElementById('context-menu');
+  menu.style.left = Math.min(e.clientX, window.innerWidth-160)+'px';
+  menu.style.top = Math.min(e.clientY, window.innerHeight-120)+'px';
+  menu.classList.remove('hidden');
+});
+document.getElementById('context-menu').addEventListener('click', function(e){
+  const action = e.target.closest('[data-action]') ? e.target.closest('[data-action]').dataset.action : null;
+  if(action==='refresh') location.reload();
+  if(action==='about-pc') openWindow('config');
+  hideContextMenu();
+});
+
+/* ============================================================
+   LOGIN / TROCA DE USUARIO
+============================================================ */
+let loginSelected = null;
+function showLogin(forceCreate){
+  document.getElementById('login-screen').classList.remove('hidden');
+  renderLoginBody(forceCreate && profiles.length>0 ? 'create' : (profiles.length>0 ? 'list' : 'create'));
+}
+function hideLogin(){ document.getElementById('login-screen').classList.add('hidden'); }
+function renderLoginBody(mode){
+  const body = document.getElementById('login-body');
+  if(mode==='create'){
+    body.innerHTML =
+      '<p class="login-note">cria um usuario pra esse navegador — cada pessoa tem seu proprio desktop, cores e recados.</p>'+
+      '<div class="login-field"><label>nome</label><input type="text" id="new-name" maxlength="30"></div>'+
+      '<div class="login-field"><label>email (so pra identificar, nao precisa ser real)</label><input type="text" id="new-email" maxlength="60"></div>'+
+      '<div class="login-field"><label>senha</label><input type="password" id="new-pass" maxlength="60"></div>'+
+      '<div id="login-err"></div>'+
+      '<div class="login-actions">'+
+        '<button class="win-btn" id="login-create-btn" style="flex:1;">criar e entrar</button>'+
+        (profiles.length>0? '<button class="edit-btn" id="login-back-btn" style="margin:0;">voltar</button>' : '')+
+      '</div>';
+    document.getElementById('login-create-btn').addEventListener('click', submitCreateProfile);
+    const back = document.getElementById('login-back-btn');
+    if(back) back.addEventListener('click', function(){ renderLoginBody('list'); });
+    return;
+  }
+  // list mode
+  let html = '<p class="login-note">quem esta usando o PC?</p>';
+  profiles.forEach(function(u){
+    const avatarInner = u.photo ? '<img src="'+u.photo+'">' : escapeHTML((u.name||'?').charAt(0).toUpperCase());
+    html += '<div class="profile-tile'+(loginSelected===u.id?' selected':'')+'" data-loginpick="'+u.id+'"><div class="avatar">'+avatarInner+'</div><div>'+escapeHTML(u.name)+'</div></div>';
+  });
+  html += '<div class="profile-tile" data-logincreate="1"><div class="avatar">➕</div><div>criar novo usuario</div></div>';
+  if(loginSelected){
+    html += '<div class="login-field"><label>senha</label><input type="password" id="login-pass"></div>'+
+      '<div id="login-err"></div>'+
+      '<div class="login-actions"><button class="win-btn" id="login-enter-btn" style="flex:1;">entrar</button></div>';
+  }
+  body.innerHTML = html;
+  body.querySelectorAll('[data-loginpick]').forEach(function(t){
+    t.addEventListener('click', function(){ loginSelected = t.dataset.loginpick; renderLoginBody('list'); setTimeout(function(){ const p=document.getElementById('login-pass'); if(p) p.focus(); },0); });
+  });
+  const createTile = body.querySelector('[data-logincreate]');
+  if(createTile) createTile.addEventListener('click', function(){ renderLoginBody('create'); });
+  const enterBtn = document.getElementById('login-enter-btn');
+  if(enterBtn){
+    enterBtn.addEventListener('click', submitLogin);
+    document.getElementById('login-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') submitLogin(); });
+  }
+}
+function submitLogin(){
+  const u = profiles.filter(function(x){ return x.id===loginSelected; })[0];
+  if(!u) return;
+  const pass = document.getElementById('login-pass').value;
+  if(pass!==u.pass){
+    document.getElementById('login-err').innerHTML = '<p class="login-error">senha errada.</p>';
+    return;
+  }
+  enterAsProfile(u);
+}
+function submitCreateProfile(){
+  const name = (document.getElementById('new-name').value||'').trim();
+  const email = (document.getElementById('new-email').value||'').trim();
+  const pass = document.getElementById('new-pass').value;
+  if(!name || !pass){
+    document.getElementById('login-err').innerHTML = '<p class="login-error">preenche nome e senha.</p>';
+    return;
+  }
+  const u = { id: genId(), name: name, email: email||'sem-email', pass: pass, photo:'' };
+  profiles.push(u);
+  saveProfiles(profiles);
+  enterAsProfile(u);
+}
+function enterAsProfile(u){
+  currentProfile = u;
+  setCurrentProfileId(u.id);
+  siteData = loadStateFor(u.id);
+  if(u.photo && !siteData.profile.photo) siteData.profile.photo = u.photo;
+  currentPostIndex = null; currentNoteIndex = null; currentFolderId = null; explorerOpenType = null;
+  loginSelected = null;
+  hideLogin();
+  bootDesktop();
+}
+function logoutProfile(){
+  Object.keys(openWindows).slice().forEach(closeWindow);
+  currentProfile = null;
+  setCurrentProfileId('');
+  document.getElementById('desktop').style.visibility = 'hidden';
+  showLogin(false);
+}
+function deleteUser(id){
+  if(profiles.length<=1){ alert('precisa ter pelo menos um usuario.'); return; }
+  const u = profiles.filter(function(x){ return x.id===id; })[0];
+  if(!u) return;
+  if(!confirm('Excluir o usuario "'+u.name+'" e todos os dados dele nesse navegador?')) return;
+  profiles = profiles.filter(function(x){ return x.id!==id; });
+  saveProfiles(profiles);
+  try{ localStorage.removeItem(dataKey(id)); }catch(e){}
+  if(currentProfile && currentProfile.id===id) logoutProfile();
+  else refreshWindowContent('config');
+}
+function changeMyPassword(){
+  if(!currentProfile) return;
+  const cur = prompt('Senha atual:');
+  if(cur===null) return;
+  if(cur!==currentProfile.pass){ alert('senha atual incorreta.'); return; }
+  const nova = prompt('Nova senha:');
+  if(!nova) return;
+  currentProfile.pass = nova;
+  profiles = profiles.map(function(p){ return p.id===currentProfile.id ? currentProfile : p; });
+  saveProfiles(profiles);
+  alert('senha alterada!');
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+function bootDesktop(){
+  document.getElementById('desktop').style.visibility = 'visible';
+  renderDesktopIcons();
+  renderStartMenu();
+  applyCrtState();
+  applyWallpaper();
+  updateClock();
+}
+updateClock();
+setInterval(updateClock, 1000);
+setTimeout(function(){
+  const boot = document.getElementById('boot-screen');
+  boot.classList.add('fade-out');
+  setTimeout(function(){ boot.remove(); }, 700);
+}, 1400);
+
+(function initAuth(){
+  document.getElementById('desktop').style.visibility = 'hidden';
+  const savedId = getCurrentProfileId();
+  const saved = savedId ? profiles.filter(function(u){ return u.id===savedId; })[0] : null;
+  if(saved){
+    currentProfile = saved;
+    siteData = loadStateFor(saved.id);
+    bootDesktop();
+  }else{
+    showLogin(false);
+  }
+})();
+</script>
+</body>
+</html>
